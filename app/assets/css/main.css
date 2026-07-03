@@ -1,0 +1,56 @@
+/* Variables CSS organizadas semánticamente por sección y globales */
+:root {
+  /* Globales / Compartidos */
+  --global-bg: hsl(0, 0%, 4%);
+  --global-base: hsl(0, 0%, 7%);
+  --global-text: hsl(220, 20%, 92%);
+  --global-text-muted: hsl(220, 10%, 69%);
+  --global-text-dim: hsl(220, 10%, 44%);
+
+  /* Sección Sobre Mí (About) */
+  --about-base: var(--global-base);
+  --about-accent: hsl(270, 67%, 45%);
+  --about-accent-light: hsl(270, 60%, 65%);
+  --about-accent-dark: hsl(270, 70%, 35%);
+  --about-fuchsia: hsl(300, 85%, 55%);
+  --about-pink: hsl(330, 90%, 55%);
+
+  /* Sección Contacto (Contact) */
+  --contact-base: var(--global-base);
+  --contact-accent: hsl(145, 65%, 42%);
+  --contact-accent-light: hsl(145, 60%, 60%);
+  --contact-accent-dark: hsl(145, 70%, 30%);
+
+  /* Sección Proyectos (Projects) */
+  --projects-base: var(--global-base);
+  --projects-accent: hsl(225, 75%, 48%);
+  --projects-accent-light: hsl(225, 70%, 65%);
+  --projects-accent-dark: hsl(225, 80%, 35%);
+
+  /* Categorías de Proyectos (Colores Análogos con tonos celestes y verdosos) */
+  --projects-accent-destacados: hsl(225, 75%, 48%);
+  --projects-accent-light-destacados: hsl(225, 70%, 65%);
+  --projects-accent-dark-destacados: hsl(225, 80%, 35%);
+
+  --projects-accent-produccion: hsl(195, 75%, 48%);
+  --projects-accent-light-produccion: hsl(195, 70%, 65%);
+  --projects-accent-dark-produccion: hsl(195, 80%, 35%);
+
+  --projects-accent-desarrollo: hsl(165, 75%, 44%);
+  --projects-accent-light-desarrollo: hsl(165, 70%, 60%);
+  --projects-accent-dark-desarrollo: hsl(165, 80%, 30%);
+
+  --projects-accent-personales: hsl(135, 70%, 42%);
+  --projects-accent-light-personales: hsl(135, 65%, 58%);
+  --projects-accent-dark-personales: hsl(135, 75%, 28%);
+
+  /* Sección Habilidades (Skills) */
+  --skills-base: hsl(180, 70%, 12%);
+  --skills-accent: hsl(180, 75%, 42%);
+  --skills-accent-light: hsl(180, 70%, 60%);
+  --skills-accent-dark: hsl(180, 80%, 30%);
+  --skills-highlight: hsl(200, 85%, 48%);
+  --skills-highlight-light: hsl(200, 80%, 65%);
+  --skills-highlight-dark: hsl(200, 90%, 35%);
+}
+
