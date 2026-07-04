@@ -7,13 +7,15 @@
       Mi enfoque combina la optimización de rendimiento, la integración fluida de APIs cognitivas y la reutilización de código para asegurar que cada interacción del agente sea rápida, precisa y brinde la mejor experiencia de usuario.
     </p>
     <div class="pt-3">
-      <NuxtLink
+      <BaseGradientButton
         to="/skills"
-        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-about-fuchsia to-about-pink text-white font-medium text-sm shadow-[0_4px_15px_rgba(217,70,239,0.3)] hover:shadow-[0_6px_20px_rgba(217,70,239,0.5)] hover:scale-105 active:scale-95 transition-all duration-300"
-      >
-        <span>Ver habilidades técnicas</span>
-        <Icon name="mdi:arrow-right" class="w-4.5 h-4.5" />
-      </NuxtLink>
+        text="Ver habilidades técnicas"
+        icon="mdi:arrow-right"
+      />
     </div>
   </div>
 </template>
+
+<script setup>
+import BaseGradientButton from '~/components/Common/BaseGradientButton.vue';
+</script>

@@ -380,7 +380,7 @@ const getGradientTo = (id: string): string => {
     about: 'to-about-highlight',
     contact: 'to-contact-accent-light',
     projects: 'to-projects-accent-light',
-    skills: 'to-skills-highlight',
+    skills: 'to-skills-accent-light',
   };
   return gradients[id] || 'to-about-highlight';
 };

@@ -66,162 +66,7 @@
     </div>
 
     <!-- Sidebar desplegable -->
-    <div
-      class="fixed inset-0 z-[9999] transition-all duration-300 ease-in-out"
-      :class="
-        mobileMenuOpen
-          ? 'opacity-100 pointer-events-auto'
-          : 'opacity-0 pointer-events-none'
-      "
-      @click="closeMobileMenu"
-    >
-      <!-- Overlay oscuro (sin desenfoque) -->
-      <div
-        v-if="mobileMenuOpen"
-        class="absolute inset-0 bg-black bg-opacity-60"
-        style="z-index: 1"
-      ></div>
-
-      <!-- Sidebar Panel -->
-      <div
-        class="absolute right-0 top-0 bottom-0 w-80 bg-global-bg shadow-2xl transform transition-all duration-300 ease-in-out overflow-y-auto"
-        :class="mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'"
-        @click.stop
-        style="
-          box-shadow: -10px 0 40px hsla(0, 0%, 0%, 0.8);
-          height: 100vh;
-          z-index: 2;
-        "
-      >
-        <!-- Header del Sidebar -->
-        <div
-          class="flex items-center justify-between p-6 border-b"
-          :style="{ borderColor: backgroundStore.navbarBorderColor }"
-        >
-          <div class="flex items-center space-x-3">
-            <div
-              class="w-10 h-10 rounded-full flex items-center justify-center"
-              :style="{
-                background: `linear-gradient(to right, ${backgroundStore.navbarAccentColor}, ${backgroundStore.navbarHighlightColor})`
-              }"
-            >
-              <span class="text-global-text font-bold text-lg">J</span>
-            </div>
-            <span class="text-xl font-bold text-global-text menu-text-modern"
-              >Menú</span
-            >
-          </div>
-          <button
-            @click="closeMobileMenu"
-            class="text-global-text-muted hover:text-global-text p-2 rounded-lg hover:bg-global-base transition-all duration-300"
-            aria-label="Close menu"
-          >
-            <Icon name="mdi:close" class="h-6 w-6" />
-          </button>
-        </div>
-
-        <!-- Navigation Links -->
-        <div class="p-6 space-y-2">
-          <NuxtLink
-            v-for="item in navigationItems"
-            :key="item.name"
-            :to="item.href"
-            class="group flex items-center justify-between p-4 rounded-lg transition-all duration-300 hover:translate-x-1"
-            :class="{
-              'border-l-4': isActiveRoute(item.href),
-            }"
-            :style="isActiveRoute(item.href) ? {
-              background: `linear-gradient(to right, ${backgroundStore.navbarAccentColor}20, ${backgroundStore.navbarHighlightColor}20)`,
-              borderColor: backgroundStore.navbarAccentColor
-            } : {
-              '--hover-bg': backgroundStore.navbarBorderColor
-            }"
-            @click="closeMobileMenu"
-          >
-            <div class="flex items-center space-x-4">
-              <!-- Iconos para cada sección -->
-              <div
-                class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300"
-                :style="{ backgroundColor: backgroundStore.navbarBorderColor }"
-              >
-                <!-- Icono Inicio -->
-                <Icon
-                  v-if="item.name === 'Inicio'"
-                  name="mdi:home"
-                  class="w-4 h-4 text-global-text-muted group-hover:text-global-text transition-colors duration-300"
-                />
-                <!-- Icono Sobre Mí -->
-                <Icon
-                  v-else-if="item.name === 'Sobre Mí'"
-                  name="mdi:account"
-                  class="w-4 h-4 text-global-text-muted group-hover:text-global-text transition-colors duration-300"
-                />
-                <!-- Icono Proyectos -->
-                <Icon
-                  v-else-if="item.name === 'Proyectos'"
-                  name="mdi:folder-multiple"
-                  class="w-4 h-4 text-global-text-muted group-hover:text-global-text transition-colors duration-300"
-                />
-                <!-- Icono Habilidades -->
-                <Icon
-                  v-else-if="item.name === 'Habilidades'"
-                  name="mdi:tools"
-                  class="w-4 h-4 text-global-text-muted group-hover:text-global-text transition-colors duration-300"
-                />
-                <!-- Icono Contacto -->
-                <Icon
-                  v-else-if="item.name === 'Contacto'"
-                  name="mdi:email"
-                  class="w-4 h-4 text-global-text-muted group-hover:text-global-text transition-colors duration-300"
-                />
-              </div>
-              <span
-                class="text-lg font-medium transition-colors duration-300"
-                :class="
-                  isActiveRoute(item.href)
-                    ? 'text-global-text'
-                    : 'text-global-text-muted group-hover:text-global-text'
-                "
-              >
-                {{ item.name }}
-              </span>
-            </div>
-
-            <!-- Flecha indicadora -->
-            <Icon
-              name="mdi:chevron-right"
-              class="w-5 h-5 text-global-text-dim transition-all duration-300"
-              :style="isActiveRoute(item.href) ? { color: backgroundStore.navbarAccentColor } : {}"
-              :class="{ 'group-hover:text-global-text': !isActiveRoute(item.href) }"
-            />
-          </NuxtLink>
-        </div>
-
-        <!-- Footer del Sidebar -->
-        <div
-          class="absolute bottom-0 left-0 right-0 p-6 border-t"
-          :style="{ borderColor: backgroundStore.navbarBorderColor }"
-        >
-          <div class="flex items-center justify-center space-x-4">
-            <!-- Social Icons -->
-            <a
-              href="#"
-              class="text-global-text-muted transition-colors duration-300"
-              :style="{ color: backgroundStore.navbarAccentColor }"
-            >
-              <Icon name="mdi:github" class="w-6 h-6" />
-            </a>
-            <a
-              href="#"
-              class="text-global-text-muted transition-colors duration-300"
-              :style="{ color: backgroundStore.navbarAccentColor }"
-            >
-              <Icon name="mdi:linkedin" class="w-6 h-6" />
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+    <SideBar v-model:isOpen="mobileMenuOpen" />
   </nav>
 </template>
 
@@ -229,6 +74,7 @@
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useBackgroundStore } from "~/store";
+import SideBar from "~/components/SideBar.vue";
 
 const route = useRoute();
 const backgroundStore = useBackgroundStore();
@@ -255,11 +101,6 @@ const toggleMobileMenu = () => {
   } else {
     window.dispatchEvent(new CustomEvent("drawer-close"));
   }
-};
-
-const closeMobileMenu = () => {
-  mobileMenuOpen.value = false;
-  window.dispatchEvent(new CustomEvent("drawer-close"));
 };
 </script>
 

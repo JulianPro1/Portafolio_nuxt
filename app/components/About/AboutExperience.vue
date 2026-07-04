@@ -17,18 +17,18 @@
       He colaborado en proyectos destacados como la <strong>Liga Mayor de Béisbol Profesional (LMBP)</strong>, la <strong>Federación Nacional de Fútbol (FVF)</strong>, la aplicación automotriz <strong>Mi Changan APP</strong>, la plataforma de colaboradores del <strong>Regnum Christi</strong> , <strong>entre otros</strong>. Enfocándome en lograr arquitecturas limpias, excelente performance y una buena experiencia de usuario .
     </p>
     <div class="pt-2">
-      <NuxtLink
+      <BaseGradientButton
         to="/projects"
-        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-about-fuchsia to-about-pink text-white font-medium text-sm shadow-[0_4px_15px_rgba(217,70,239,0.3)] hover:shadow-[0_6px_20px_rgba(217,70,239,0.5)] hover:scale-105 active:scale-95 transition-all duration-300"
-      >
-        <span>Ver proyectos realizados</span>
-        <Icon name="mdi:arrow-right" class="w-4.5 h-4.5" />
-      </NuxtLink>
+        text="Ver proyectos realizados"
+        icon="mdi:arrow-right"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
+import BaseGradientButton from '~/components/Common/BaseGradientButton.vue';
+
 defineProps({
   isActive: {
     type: Boolean,

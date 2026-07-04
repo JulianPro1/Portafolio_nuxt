@@ -10,66 +10,71 @@ interface RouteThemeConfig {
   navbarHighlightColor: string
 }
 
+const DEFAULT_CONFIG = {
+  backgroundColor: 'hsl(0, 0%, 4%)',
+  backgroundClass: '',
+  showWaves: false,
+  wavesGradient: 'about-gradient-subtle',
+  navbarBorderColor: 'hsl(271, 100%, 14%)',
+  navbarAccentColor: 'hsl(272, 63%, 46%)',
+  navbarHighlightColor: 'hsl(225, 75%, 48%)',
+  navbarAccentColorHslComponents: '272, 63%, 46%',
+} as const
+
 export const useBackgroundStore = defineStore('background', {
   state: () => ({
-    backgroundColor: '#0a0a0a',
-    backgroundClass: '',
-    showWaves: false,
-    wavesGradient: 'about-gradient-subtle',
-    navbarBorderColor: '#240046',
-    navbarAccentColor: '#7B2CBF',
-    navbarHighlightColor: '#1F4DD6',
-    navbarAccentColorRgb: '123, 44, 191',
-    cardBorderColors: {
-      about: 'border-about-accent-dark/80',
-      contact: 'border-contact-accent/80',
-      projects: 'border-projects-accent/80',
-      skills: 'border-skills-accent/80',
-    },
+    backgroundColor: DEFAULT_CONFIG.backgroundColor as string,
+    backgroundClass: DEFAULT_CONFIG.backgroundClass as string,
+    showWaves: DEFAULT_CONFIG.showWaves as boolean,
+    wavesGradient: DEFAULT_CONFIG.wavesGradient as string,
+    navbarBorderColor: DEFAULT_CONFIG.navbarBorderColor as string,
+    navbarAccentColor: DEFAULT_CONFIG.navbarAccentColor as string,
+    navbarHighlightColor: DEFAULT_CONFIG.navbarHighlightColor as string,
+    navbarAccentColorHslComponents: DEFAULT_CONFIG.navbarAccentColorHslComponents as string,
     domainAccentColors: {
-      about: '#7B2CBF',
-      contact: '#059669',
-      projects: '#1F4DD6',
-      skills: '#06B6D4',
+      about: 'hsl(270, 67%, 45%)',
+      contact: 'hsl(145, 65%, 42%)',
+      projects: 'hsl(225, 75%, 48%)',
+      skills: 'hsl(180, 70%, 60%)',
     },
     routeThemes: {
       '/': {
-        backgroundColor: '#0a0a0a',
+        backgroundColor: 'hsl(0, 0%, 4%)',
         showWaves: true,
         wavesGradient: 'about-gradient-subtle',
-        navbarBorderColor: '#240046',
-        navbarAccentColor: '#7B2CBF',
-        navbarHighlightColor: '#1F4DD6',
+        navbarBorderColor: 'hsl(271, 100%, 14%)',
+        navbarAccentColor: 'hsl(272, 63%, 46%)',
+        navbarHighlightColor: 'hsl(330, 90%, 55%)',
       },
       '/about': {
-        backgroundColor: '#0a0a0a',
-        navbarBorderColor: '#240046',
-        navbarAccentColor: '#7B2CBF',
-        navbarHighlightColor: '#1F4DD6',
+        backgroundColor: 'hsl(0, 0%, 4%)',
+        navbarBorderColor: 'hsl(271, 100%, 14%)',
+        navbarAccentColor: 'hsl(272, 63%, 46%)',
+        navbarHighlightColor: 'hsl(330, 90%, 55%)',
       },
       '/projects': {
-        backgroundColor: '#0a0a0a',
-        navbarBorderColor: '#1236A1',
-        navbarAccentColor: '#1F4DD6',
-        navbarHighlightColor: '#06B6D4',
+        backgroundColor: 'hsl(0, 0%, 4%)',
+        navbarBorderColor: 'hsl(225, 80%, 35%)',
+        navbarAccentColor: 'hsl(225, 75%, 48%)',
+        navbarHighlightColor: 'hsl(189, 95%, 43%)',
       },
       '/skills': {
-        backgroundColor: '#0a0a0a',
-        navbarBorderColor: '#004D4D',
-        navbarAccentColor: '#06B6D4',
-        navbarHighlightColor: '#059669',
+        backgroundColor: 'hsl(0, 0%, 4%)',
+        navbarBorderColor: 'hsl(180, 100%, 15%)',
+        navbarAccentColor: 'hsl(189, 95%, 43%)',
+        navbarHighlightColor: 'hsl(161, 94%, 30%)',
       },
       '/contact': {
-        backgroundColor: '#0a0a0a',
-        navbarBorderColor: '#047857',
-        navbarAccentColor: '#059669',
-        navbarHighlightColor: '#7B2CBF',
+        backgroundColor: 'hsl(0, 0%, 4%)',
+        navbarBorderColor: 'hsl(163, 94%, 24%)',
+        navbarAccentColor: 'hsl(161, 94%, 30%)',
+        navbarHighlightColor: 'hsl(115, 70%, 45%)',
       },
       '/project-detail/:id': {
-        backgroundColor: '#0a0a0a',
-        navbarBorderColor: '#1236A1',
-        navbarAccentColor: '#1F4DD6',
-        navbarHighlightColor: '#06B6D4',
+        backgroundColor: 'hsl(0, 0%, 4%)',
+        navbarBorderColor: 'hsl(225, 80%, 35%)',
+        navbarAccentColor: 'hsl(225, 75%, 48%)',
+        navbarHighlightColor: 'hsl(189, 95%, 43%)',
       },
     } as Record<string, RouteThemeConfig>,
   }),
@@ -97,24 +102,48 @@ export const useBackgroundStore = defineStore('background', {
       this.navbarBorderColor = borderColor
       this.navbarAccentColor = accentColor
       this.navbarHighlightColor = highlightColor
-      this.navbarAccentColorRgb = this.hexToRgb(accentColor)
+      this.navbarAccentColorHslComponents = this.extractHslComponents(accentColor)
     },
 
-    hexToRgb(hex: string): string {
-      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-      if (!result) return '123, 44, 191'
-      return `${parseInt(result[1]!, 16)}, ${parseInt(result[2]!, 16)}, ${parseInt(result[3]!, 16)}`
+    extractHslComponents(color: string): string {
+      const hslMatch = /hsl\(\s*(\d+)\s*,\s*([\d.]+%)\s*,\s*([\d.]+%)\s*\)/i.exec(color)
+      if (hslMatch) {
+        return `${hslMatch[1]}, ${hslMatch[2]}, ${hslMatch[3]}`
+      }
+      
+      // Fallback conversion for HEX if needed
+      if (color.startsWith('#')) {
+        const hex = color.replace('#', '')
+        const r = parseInt(hex.substring(0, 2), 16) / 255
+        const g = parseInt(hex.substring(2, 4), 16) / 255
+        const b = parseInt(hex.substring(4, 6), 16) / 255
+        const max = Math.max(r, g, b), min = Math.min(r, g, b)
+        let h = 0, s = 0, l = (max + min) / 2
+        if (max !== min) {
+          const d = max - min
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+          switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break
+            case g: h = (b - r) / d + 2; break
+            case b: h = (r - g) / d + 4; break
+          }
+          h /= 6
+        }
+        return `${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%`
+      }
+      
+      return '272, 63%, 46%'
     },
 
     resetBackground() {
-      this.backgroundColor = '#0a0a0a'
-      this.backgroundClass = ''
-      this.showWaves = false
-      this.wavesGradient = 'about-gradient-subtle'
-      this.navbarBorderColor = '#240046'
-      this.navbarAccentColor = '#7B2CBF'
-      this.navbarHighlightColor = '#1F4DD6'
-      this.navbarAccentColorRgb = '123, 44, 191'
+      this.backgroundColor = DEFAULT_CONFIG.backgroundColor
+      this.backgroundClass = DEFAULT_CONFIG.backgroundClass
+      this.showWaves = DEFAULT_CONFIG.showWaves
+      this.wavesGradient = DEFAULT_CONFIG.wavesGradient
+      this.navbarBorderColor = DEFAULT_CONFIG.navbarBorderColor
+      this.navbarAccentColor = DEFAULT_CONFIG.navbarAccentColor
+      this.navbarHighlightColor = DEFAULT_CONFIG.navbarHighlightColor
+      this.navbarAccentColorHslComponents = DEFAULT_CONFIG.navbarAccentColorHslComponents
     },
 
     applyThemeForRoute(routePath: string) {

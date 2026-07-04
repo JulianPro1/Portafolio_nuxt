@@ -20,6 +20,8 @@
   --contact-accent: hsl(145, 65%, 42%);
   --contact-accent-light: hsl(145, 60%, 60%);
   --contact-accent-dark: hsl(145, 70%, 30%);
+  --contact-teal: hsl(175, 70%, 45%);
+  --contact-lime: hsl(115, 70%, 45%);
 
   /* Sección Proyectos (Projects) */
   --projects-base: var(--global-base);
@@ -49,8 +51,5 @@
   --skills-accent: hsl(180, 75%, 42%);
   --skills-accent-light: hsl(180, 70%, 60%);
   --skills-accent-dark: hsl(180, 80%, 30%);
-  --skills-highlight: hsl(200, 85%, 48%);
-  --skills-highlight-light: hsl(200, 80%, 65%);
-  --skills-highlight-dark: hsl(200, 90%, 35%);
 }
 
