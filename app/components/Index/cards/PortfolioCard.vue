@@ -1,13 +1,14 @@
 <template>
   <div
-    class="relative w-full h-full rounded-2xl border backdrop-blur-xl shadow-2xl overflow-hidden group"
+    class="relative w-full h-full rounded-2xl border shadow-2xl overflow-hidden group"
     :class="[
       {
         'opacity-50 scale-90': !isActive,
-        'opacity-100 scale-100': isActive
+        'opacity-100 scale-100 backdrop-blur-xl': isActive,
       },
       borderColor
     ]"
+    style="will-change: transform;"
   >
 
       <div class="relative z-10 h-full">

@@ -29,9 +29,25 @@
         :style="{ borderColor: backgroundStore.navbarBorderColor }"
       >
         <div class="flex items-center space-x-3">
-          <span class="text-xl font-bold text-global-text select-none">
-            Julian.dev
-          </span>
+          <!-- Logo con degradado análogo -->
+          <div class="relative group cursor-default">
+            <span
+              class="text-xl font-bold text-global-text select-none"
+              :style="{ textShadow: `0 0 16px ${backgroundStore.navbarAccentColor}50` }"
+            >
+              Julian.dev
+            </span>
+            <!-- Línea análoga animada -->
+            <span
+              class="absolute bottom-[-3px] left-0 h-[2px] w-0 group-hover:w-full transition-all duration-500 rounded-full"
+              :style="analogGradientStyle"
+            ></span>
+            <!-- Siempre visible como acento sutil -->
+            <span
+              class="absolute bottom-[-3px] left-0 h-[2px] rounded-full"
+              :style="{ ...analogGradientStyle, width: '40%', opacity: 0.6 }"
+            ></span>
+          </div>
         </div>
         <button
           @click="close"
@@ -147,7 +163,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted, nextTick } from "vue";
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from "vue";
 import { useRoute } from "vue-router";
 import { useBackgroundStore } from "~/store";
 import gsap from "gsap";
@@ -160,6 +176,22 @@ const backgroundStore = useBackgroundStore();
 const containerRef = ref<HTMLElement | null>(null);
 const overlayRef = ref<HTMLElement | null>(null);
 const panelRef = ref<HTMLElement | null>(null);
+
+/** Degradado análogo: accent → highlight → +30° en el espectro */
+const analogGradientStyle = computed(() => {
+  const accent = backgroundStore.navbarAccentColor;
+  const mid = backgroundStore.navbarHighlightColor;
+  // Calcular tercer color análogo (+30° del highlight)
+  const m = /hsl\(\s*(\d+)/i.exec(mid);
+  const end = m
+    ? `hsl(${(parseInt(m[1]!) + 30) % 360}, 80%, 55%)`
+    : mid;
+  return {
+    background: `linear-gradient(to right, ${accent}, ${mid}, ${end})`,
+    boxShadow: `0 0 6px ${accent}60`,
+  };
+});
+
 
 const navigationItems = [
   { name: "Inicio", href: "/" },

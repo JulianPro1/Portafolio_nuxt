@@ -67,14 +67,15 @@
                 />
                 <span class="tracking-wide hidden md:inline">{{ tab.label }}</span>
                 
-                <!-- Selector de Proyectos rápido tipo icono -->
-                <ProjectsDropdown
-                  :projects="getProjectsForCategory(tab.id)"
-                  iconOnly
-                  @select="scrollToProject"
-                  @click.stop
-                  class="ml-1"
-                />
+                <!-- Selector de Proyectos rápido tipo icono (solo desktop) -->
+                <span class="hidden md:inline ml-1">
+                  <ProjectsDropdown
+                    :projects="getProjectsForCategory(tab.id)"
+                    iconOnly
+                    @select="scrollToProject"
+                    @click.stop
+                  />
+                </span>
               </div>
             </div>
           </div>
@@ -116,6 +117,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Burbuja flotante de proyectos para mobile -->
+    <ProjectsFloatingBubble :active-tab="activeTab" @select="(pid) => scrollToProject(pid)" />
   </section>
 </template>
 
@@ -123,10 +127,10 @@
 import { ref, onMounted, onUnmounted, watch, nextTick } from "vue";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import SectionTitle from "~/components/Common/SectionTitle.vue";
 import ProjectsListScroll from "~/components/Projects/ProjectsListScroll.vue";
 import ProjectsDropdown from "~/components/Projects/ProjectsDropdown.vue";
+import ProjectsFloatingBubble from "~/components/Projects/ProjectsFloatingBubble.vue";
 import AnimatedElement from "~/components/Common/AnimatedElement.vue";
 import { getProjectsData } from "~/data/projectsData";
 import { useLenis } from "~/composables/useLenis";

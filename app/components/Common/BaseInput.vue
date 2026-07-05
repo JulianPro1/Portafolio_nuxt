@@ -15,7 +15,7 @@
       v-bind="$attrs"
       @blur="onBlur"
       :class="[
-        'w-full px-3 py-2 bg-contact-accent-dark/30 border rounded-lg text-dark font-sans antialiased placeholder-gray-500/80 focus:outline-none focus:ring-1 focus:bg-contact-accent-dark/60 transition-all duration-300 text-sm',
+        'w-full px-3 py-2 bg-contact-accent-dark/15 border rounded-lg text-dark font-sans antialiased placeholder-gray-500/80 focus:outline-none focus:ring-1 focus:bg-contact-accent-dark/40 transition-all duration-300 text-sm',
         error 
           ? 'border-red-500/60 focus:border-red-500 focus:ring-red-500/20' 
           : 'border-contact-accent-dark/80 focus:border-contact-accent focus:ring-contact-accent/20'

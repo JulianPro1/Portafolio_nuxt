@@ -1,7 +1,7 @@
 <template>
   <div class="relative h-full p-4 sm:p-5 flex flex-col overflow-hidden text-left select-none">
-    <div class="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-contact-accent/20 blur-3xl"></div>
-    <div class="absolute -left-16 -bottom-16 h-36 w-36 rounded-full bg-contact-accent-light/10 blur-3xl"></div>
+    <div class="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-contact-accent/20 blur-xl"></div>
+    <div class="absolute -left-16 -bottom-16 h-36 w-36 rounded-full bg-contact-accent-light/10 blur-xl"></div>
 
     <div class="relative z-10 mb-3 sm:mb-5 flex items-center justify-between gap-3">
       <div class="inline-flex items-center gap-2 rounded-full border border-contact-accent bg-contact-accent/10 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[0.6rem] sm:text-[0.65rem] font-bold uppercase tracking-[0.22em] text-contact-accent-light">

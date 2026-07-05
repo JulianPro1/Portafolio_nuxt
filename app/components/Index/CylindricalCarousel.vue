@@ -24,7 +24,11 @@
           opacity: style.opacity,
           zIndex: style.zIndex,
           cursor: isDragging ? 'grabbing' : 'grab',
-          transition: isDragging ? 'transform 0.1s ease-out, opacity 0.1s ease-out' : 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          transition: isDragging
+            ? 'transform 0.1s ease-out, opacity 0.1s ease-out'
+            : 'transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease',
+          willChange: 'transform, opacity',
+          contain: 'layout style',
         }"
       >
         <slot name="card" :index="index" :is-active="index === activeIndex" />

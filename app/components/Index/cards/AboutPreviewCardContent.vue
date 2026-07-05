@@ -1,7 +1,7 @@
 <template>
   <div class="relative h-full p-4 sm:p-5 flex flex-col overflow-hidden text-left select-none">
-    <div class="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-about-accent/30 blur-3xl border border-about-accent"></div>
-    <div class="absolute -left-16 -bottom-16 h-36 w-36 rounded-full bg-about-accent/20 blur-3xl"></div>
+    <div class="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-about-accent/30 blur-xl border border-about-accent"></div>
+    <div class="absolute -left-16 -bottom-16 h-36 w-36 rounded-full bg-about-accent/20 blur-xl"></div>
     <div class="relative z-10 mb-3 sm:mb-5 rounded-2xl border border-about-accent p-1.5 sm:p-2">
       <InteractiveMarquee
         :items="techSkills"

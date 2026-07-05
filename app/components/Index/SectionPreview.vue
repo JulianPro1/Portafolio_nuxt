@@ -91,20 +91,23 @@
               :gradient-to="getGradientTo(portfolioItems[index]!.id)"
               :text-color="getTextColor(portfolioItems[index]!.id)"
             >
-              <AboutPreviewCardContent
-                v-if="portfolioItems[index]!.id === 'about'"
-                :tech-skills="techSkillsData"
-              />
-              <ProjectsPreviewCardContent
-                v-else-if="portfolioItems[index]!.id === 'projects'"
-              />
-              <SkillsPreviewCardContent
-                v-else-if="portfolioItems[index]!.id === 'skills'"
-              />
-              <ContactPreviewCardContent
-                v-else-if="portfolioItems[index]!.id === 'contact'"
-              />
-              
+              <!-- Lazy mount: solo renderiza el contenido cuando la card fue activa al menos 1 vez -->
+              <template v-if="mountedCards.has(portfolioItems[index]!.id)">
+                <AboutPreviewCardContent
+                  v-if="portfolioItems[index]!.id === 'about'"
+                  :tech-skills="techSkillsData"
+                />
+                <ProjectsPreviewCardContent
+                  v-else-if="portfolioItems[index]!.id === 'projects'"
+                />
+                <SkillsPreviewCardContent
+                  v-else-if="portfolioItems[index]!.id === 'skills'"
+                />
+                <ContactPreviewCardContent
+                  v-else-if="portfolioItems[index]!.id === 'contact'"
+                />
+              </template>
+              <!-- Skeleton mientras la card no ha sido visitada -->
               <PreviewCardSkeleton v-else />
             </PortfolioCard>
           </AnimatedElement>
@@ -117,14 +120,14 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import CylindricalCarousel from '@/components/Index/CylindricalCarousel.vue';
-import PortfolioCard from '@/components/Index/PortfolioCard.vue';
-import AboutPreviewCardContent from '@/components/Index/AboutPreviewCardContent.vue';
-import ContactPreviewCardContent from '@/components/Index/ContactPreviewCardContent.vue';
-import ProjectsPreviewCardContent from '@/components/Index/ProjectsPreviewCardContent.vue';
-import SkillsPreviewCardContent from '@/components/Index/SkillsPreviewCardContent.vue';
-import PreviewCardSkeleton from '@/components/Index/PreviewCardSkeleton.vue';
+import PortfolioCard from '~/components/Index/cards/PortfolioCard.vue';
+import AboutPreviewCardContent from '~/components/Index/cards/AboutPreviewCardContent.vue';
+import ContactPreviewCardContent from '~/components/Index/cards/ContactPreviewCardContent.vue';
+import ProjectsPreviewCardContent from '~/components/Index/cards/ProjectsPreviewCardContent.vue';
+import SkillsPreviewCardContent from '~/components/Index/cards/SkillsPreviewCardContent.vue';
+import PreviewCardSkeleton from '~/components/Index/cards/PreviewCardSkeleton.vue';
 import AnimatedElement from '@/components/Common/AnimatedElement.vue';
-import { techSkillsData } from '~/data/techSkillsData';
+import { techSkillsData } from '~/data/aboutTechData';
 import { gsap } from 'gsap';
 
 const isMobile = ref(false);
@@ -132,6 +135,9 @@ const carouselRef = ref<any>(null);
 const activeIndex = ref(0);
 const btnPrevRef = ref<HTMLElement | null>(null);
 const btnNextRef = ref<HTMLElement | null>(null);
+
+// Lazy mounting: set de IDs de cards que ya fueron activas (se montarán su contenido)
+const mountedCards = ref<Set<string>>(new Set(['about'])); // 'about' es la card inicial
 
 const updateSize = () => {
   if (typeof window !== 'undefined') {
@@ -158,6 +164,11 @@ const onCarouselChange = (index: number) => {
     animateArrowsCylindrical(direction);
   }
   activeIndex.value = index;
+  // Marcar la card como montada para lazy-render
+  const id = portfolioItems[index]?.id;
+  if (id && !mountedCards.value.has(id)) {
+    mountedCards.value = new Set([...mountedCards.value, id]);
+  }
 };
 
 const animateArrowsCylindrical = (direction: 'next' | 'prev') => {
