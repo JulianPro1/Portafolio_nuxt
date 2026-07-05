@@ -68,11 +68,11 @@ watch(
 
 <style scoped>
 .page-content {
-  transition: filter 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .page-blurred {
-  filter: blur(2px);
+  opacity: 0.35;
   pointer-events: none;
 }
 </style>

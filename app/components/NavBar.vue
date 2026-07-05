@@ -1,7 +1,8 @@
 <template>
   <nav
-    class="fixed top-0 left-0 right-0 z-50 bg-global-bg backdrop-blur-md bg-opacity-90 border-b"
+    class="fixed top-0 left-0 right-0 z-50 border-b"
     :style="{
+      backgroundColor: 'hsla(0, 0%, 4%, 0.96)',
       borderColor: backgroundStore.navbarBorderColor,
       '--navbar-accent-color': backgroundStore.navbarAccentColorRgb
     }"
@@ -105,72 +106,6 @@ const toggleMobileMenu = () => {
 </script>
 
 <style scoped>
-/* Estilos locales */
-
-/* Efecto de texto moderno con subrayado animado */
-@keyframes menu-typewriter {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-@keyframes menu-blink {
-  50% {
-    opacity: 0;
-  }
-}
-
-.menu-text-modern {
-  position: relative;
-  color: hsl(0, 0%, 100%);
-  font-weight: bold;
-  overflow: hidden;
-}
-
-.menu-text-modern::after {
-  content: "";
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, #7B2CBF, #FCA311, #7B2CBF);
-  background-size: 200% 100%;
-  animation: gradient-slide 3s ease-in-out infinite;
-}
-
-@keyframes gradient-slide {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-/* Efecto de pulso sutil para el menú hamburguesa */
-@keyframes menu-pulse-subtle {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 rgba(var(--navbar-accent-color), 0.4);
-  }
-  50% {
-    box-shadow: 0 0 0 8px rgba(var(--navbar-accent-color), 0);
-  }
-}
-
-.menu-hamburguer-pulse {
-  animation: menu-pulse-subtle 3s ease-in-out infinite;
-}
-
-.menu-hamburguer-pulse:hover {
-  animation: none;
-}
-
 /* Hover reactivo para links de navegación */
 .group:hover {
   background-color: var(--hover-bg, rgba(var(--navbar-accent-color), 0.3));
@@ -185,18 +120,9 @@ const toggleMobileMenu = () => {
   text-shadow: 0 0 15px rgba(var(--navbar-accent-color), 0.7);
 }
 
-/* Animación de fondo sutil */
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.9;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-nav {
-  animation: pulse 4s ease-in-out infinite;
+/* Hover sutil en el botón hamburguesa */
+.menu-hamburguer-pulse:hover {
+  box-shadow: 0 0 0 6px rgba(var(--navbar-accent-color), 0.15);
+  transition: box-shadow 0.3s ease;
 }
 </style>

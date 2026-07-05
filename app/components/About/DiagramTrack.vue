@@ -42,11 +42,13 @@
       class="step-node absolute w-5 h-5 rounded-full border-2 transition-all duration-700 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center cursor-pointer z-10"
       :class="[
         isActive
-          ? `border-white shadow-[0_0_15px_${config.nodeColor}] ${config.nodeBgClass}`
+          ? `border-white ${config.nodeBgClass}`
           : 'border-gray-700 bg-gray-950 text-gray-700'
       ]"
-      style="top: 32px;"
-      :style="{ left: leftPosition }"
+      :style="[
+        { left: leftPosition, top: '32px' },
+        isActive ? { boxShadow: `0 0 15px ${config.nodeColor}` } : {}
+      ]"
     >
       <span
         v-if="activeStep === stepIndex"

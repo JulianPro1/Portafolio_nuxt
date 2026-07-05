@@ -1,18 +1,20 @@
 <template>
   <div
+    ref="elementRef"
     :class="[
       animationClass,
-      { 'opacity-0': !hasAnimated },
+      isVisible ? '' : 'opacity-0',
       { 'h-full': fullHeight }
     ]"
-    :style="{ animationDelay: computedDelay }"
-    @animationend="hasAnimated = true"
+    :style="isVisible ? { animationDelay: computedDelay } : {}"
   >
     <slot />
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+
 interface Props {
   variant?: 'title' | 'desc' | 'card' | 'cta' | 'tab' | 'carouselCard';
   delay?: string;
@@ -26,7 +28,9 @@ const props = withDefaults(defineProps<Props>(), {
   fullHeight: true,
 });
 
-const hasAnimated = ref(false);
+const elementRef = ref<HTMLElement | null>(null)
+const isVisible = ref(false)
+let observer: IntersectionObserver | null = null
 
 const animationClass = computed(() => {
   const classes: Record<string, string> = {
@@ -37,7 +41,7 @@ const animationClass = computed(() => {
     tab: 'animate-slide-fade-right',
     carouselCard: 'animate-stagger-card',
   };
-  return classes[props.variant];
+  return isVisible.value ? classes[props.variant] : '';
 });
 
 const computedDelay = computed(() => {
@@ -55,4 +59,33 @@ const computedDelay = computed(() => {
   }
   return props.delay;
 });
+
+onMounted(() => {
+  if (!elementRef.value || typeof IntersectionObserver === 'undefined') {
+    // Fallback: mostrar inmediatamente si no hay soporte
+    isVisible.value = true
+    return
+  }
+
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          isVisible.value = true
+          // Una vez visible, dejar de observar
+          observer?.disconnect()
+          observer = null
+        }
+      })
+    },
+    { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+  )
+
+  observer.observe(elementRef.value)
+})
+
+onUnmounted(() => {
+  observer?.disconnect()
+  observer = null
+})
 </script>

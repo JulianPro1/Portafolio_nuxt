@@ -5,7 +5,7 @@
     :class="[
       isHighlighted ? 'md:col-span-2 shadow-[0_0_30px_rgba(20,184,166,0.05)]' : 'md:col-span-1 shadow-[0_0_15px_rgba(20,184,166,0.02)]'
     ]"
-    style="will-change: transform, box-shadow; transform-style: preserve-3d;"
+    style="transform-style: preserve-3d;"
     @mousemove="onMouseMove"
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
@@ -24,7 +24,6 @@
           <div
             ref="iconWrapperRef"
             class="w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-r from-skills-accent/20 to-skills-accent-light/20 border border-skills-accent text-skills-accent transition-all duration-300"
-            style="will-change: transform;"
           >
             <Icon :name="skill.icon" class="w-6 h-6" />
           </div>
@@ -127,6 +126,7 @@ const onMouseEnter = () => {
 
   if (card) {
     gsap.killTweensOf(card)
+    gsap.set(card, { willChange: 'transform, box-shadow' })
     gsap.to(card, {
       scale: 1.01,
       boxShadow: '0 10px 30px -10px rgba(20, 184, 166, 0.25)',
@@ -137,6 +137,7 @@ const onMouseEnter = () => {
 
   if (iconWrapper) {
     gsap.killTweensOf(iconWrapper)
+    gsap.set(iconWrapper, { willChange: 'transform' })
     gsap.to(iconWrapper, {
       scale: 1.1,
       rotate: 5,
@@ -161,7 +162,8 @@ const onMouseLeave = () => {
       boxShadow: '0 0px 0px 0px rgba(0, 0, 0, 0)',
       ease: 'power2.out',
       duration: 0.4,
-      clearProps: 'transform,box-shadow'
+      clearProps: 'transform,box-shadow',
+      onComplete: () => gsap.set(card, { willChange: 'auto' })
     })
   }
 
@@ -172,7 +174,8 @@ const onMouseLeave = () => {
       rotate: 0,
       ease: 'power2.out',
       duration: 0.4,
-      clearProps: 'transform'
+      clearProps: 'transform',
+      onComplete: () => gsap.set(iconWrapper, { willChange: 'auto' })
     })
   }
 }
