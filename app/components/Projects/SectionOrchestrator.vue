@@ -310,8 +310,7 @@ const handleResize = () => {
 
 onMounted(() => {
   if (import.meta.client) {
-    gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-
+    // ScrollTrigger y ScrollToPlugin ya están registrados por gsap.client.ts (plugin global)
     ctx = gsap.context(() => {
       tabs.forEach((tab) => {
         ScrollTrigger.create({

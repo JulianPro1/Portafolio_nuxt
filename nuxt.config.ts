@@ -46,6 +46,31 @@ export default defineNuxtConfig({
       failOnError: false,
     },
   },
+  vite: {
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: (id) => {
+            // Agrupar GSAP y todos sus plugins en un único chunk
+            if (id.includes('node_modules/gsap')) {
+              return 'vendor-gsap'
+            }
+            // Agrupar Lenis en su propio chunk
+            if (id.includes('node_modules/lenis')) {
+              return 'vendor-lenis'
+            }
+            // Agrupar Pinia en su propio chunk
+            if (id.includes('node_modules/pinia')) {
+              return 'vendor-pinia'
+            }
+          }
+        }
+      }
+    },
+    optimizeDeps: {
+      include: ['gsap', 'gsap/ScrollTrigger', 'gsap/ScrollToPlugin', 'lenis']
+    }
+  },
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
     layoutTransition: { name: 'layout', mode: 'out-in' },

@@ -67,8 +67,7 @@
 import { onMounted, onUnmounted } from "vue";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+// ScrollTrigger ya está registrado por gsap.client.ts (plugin global)
 
 const experiences = [
   {

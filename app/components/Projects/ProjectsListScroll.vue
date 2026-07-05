@@ -68,8 +68,7 @@ let ctx: gsap.Context | null = null
 
 onMounted(() => {
   if (import.meta.client) {
-    gsap.registerPlugin(ScrollTrigger)
-    
+    // ScrollTrigger ya está registrado por gsap.client.ts (plugin global)
     ctx = gsap.context(() => {
       // Seleccionar todos los contenedores de proyectos bento en esta lista
       const elements = document.querySelectorAll('.project-bento-wrapper')
