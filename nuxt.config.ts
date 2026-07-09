@@ -47,26 +47,6 @@ export default defineNuxtConfig({
     },
   },
   vite: {
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks: (id) => {
-            // Agrupar GSAP y todos sus plugins en un único chunk
-            if (id.includes('node_modules/gsap')) {
-              return 'vendor-gsap'
-            }
-            // Agrupar Lenis en su propio chunk
-            if (id.includes('node_modules/lenis')) {
-              return 'vendor-lenis'
-            }
-            // Agrupar Pinia en su propio chunk
-            if (id.includes('node_modules/pinia')) {
-              return 'vendor-pinia'
-            }
-          }
-        }
-      }
-    },
     optimizeDeps: {
       include: ['gsap', 'gsap/ScrollTrigger', 'gsap/ScrollToPlugin', 'lenis']
     }
@@ -86,10 +66,6 @@ export default defineNuxtConfig({
         { property: 'og:type', content: 'website' },
         { name: 'twitter:card', content: 'summary_large_image' },
       ],
-      link: [
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-      ],
     }
   },
   css: ['~/assets/css/animations.css', '~/assets/css/main.css'],
@@ -99,4 +75,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@nuxt/content",
   ],
+  icon: {
+    serverBundle: 'local',
+  },
 });

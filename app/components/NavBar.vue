@@ -80,14 +80,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 import { useBackgroundStore } from "~/store";
+import { useLenis } from "~/composables/useLenis";
 import SideBar from "~/components/SideBar.vue";
 
 const route = useRoute();
 const backgroundStore = useBackgroundStore();
 const mobileMenuOpen = ref(false);
+const lenis = useLenis();
 
 // ── Scroll state ────────────────────────────────────────────
 const scrollY = ref(0);
@@ -141,7 +143,7 @@ const navbarDynamicStyle = computed(() => {
       ? `0 4px 32px hsla(0,0%,0%,0.5), 0 1px 0 ${backgroundStore.navbarBorderColor}40`
       : 'none',
     transition: 'background-color 0.4s ease, box-shadow 0.4s ease, backdrop-filter 0.4s ease',
-    '--navbar-accent-color': backgroundStore.navbarAccentColorRgb,
+    '--navbar-accent-color-hsl': backgroundStore.navbarAccentColorHslComponents,
     '--nav-grad-start': gradStart,
     '--nav-grad-mid': gradMid,
     '--nav-grad-end': gradEnd,
@@ -159,16 +161,37 @@ const handleScroll = () => {
   }
 };
 
+const handleLenisScroll = (e) => {
+  scrollY.value = e.scroll;
+};
+
+// Reset scroll state on route change
+watch(
+  () => route.path,
+  () => {
+    scrollY.value = 0;
+  }
+);
+
 onMounted(() => {
   if (import.meta.client) {
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    scrollY.value = window.scrollY;
+    if (lenis) {
+      lenis.on('scroll', handleLenisScroll);
+      scrollY.value = lenis.scroll;
+    } else {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      scrollY.value = window.scrollY;
+    }
   }
 });
 
 onUnmounted(() => {
   if (import.meta.client) {
-    window.removeEventListener('scroll', handleScroll);
+    if (lenis) {
+      lenis.off('scroll', handleLenisScroll);
+    } else {
+      window.removeEventListener('scroll', handleScroll);
+    }
   }
 });
 // ────────────────────────────────────────────────────────────
@@ -200,21 +223,21 @@ const toggleMobileMenu = () => {
 <style scoped>
 /* Hover reactivo para links de navegación */
 .group:hover {
-  background-color: var(--hover-bg, rgba(var(--navbar-accent-color), 0.3));
+  background-color: var(--hover-bg, hsla(var(--navbar-accent-color-hsl), 0.3));
 }
 
 /* Estilos adicionales para efectos de brillo neón */
 .nav-link:hover {
-  text-shadow: 0 0 10px rgba(var(--navbar-accent-color), 0.5);
+  text-shadow: 0 0 10px hsla(var(--navbar-accent-color-hsl), 0.5);
 }
 
 .nav-link[class*="text-white"] {
-  text-shadow: 0 0 15px rgba(var(--navbar-accent-color), 0.7);
+  text-shadow: 0 0 15px hsla(var(--navbar-accent-color-hsl), 0.7);
 }
 
 /* Hover sutil en el botón hamburguesa */
 .menu-hamburguer-pulse:hover {
-  box-shadow: 0 0 0 6px rgba(var(--navbar-accent-color), 0.15);
+  box-shadow: 0 0 0 6px hsla(var(--navbar-accent-color-hsl), 0.15);
   transition: box-shadow 0.3s ease;
 }
 

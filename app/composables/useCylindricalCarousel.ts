@@ -28,6 +28,8 @@ export function useCylindricalCarousel(options: UseCylindricalCarouselOptions) {
   const dragOffset = ref(0);
   const isDragging = ref(false);
   const dragStartX = ref(0);
+  const dragStartY = ref(0);
+  const isHorizontalSwipe = ref<boolean | null>(null);
   const containerRef = ref<HTMLElement | null>(null);
   const autoplayTimer = ref<number | null>(null);
   const isAutoplayPaused = ref(false);
@@ -90,18 +92,47 @@ export function useCylindricalCarousel(options: UseCylindricalCarouselOptions) {
 
     isDragging.value = true;
     dragStartX.value = 'clientX' in e ? e.clientX : (e.touches?.[0]?.clientX ?? 0);
+    dragStartY.value = 'clientY' in e ? e.clientY : (e.touches?.[0]?.clientY ?? 0);
+    isHorizontalSwipe.value = null;
     pauseAutoplay();
+
+    // Registrar listeners globales de movimiento y fin de arrastre dinámicamente
+    if (typeof window !== 'undefined') {
+      window.addEventListener('mousemove', onDragMove);
+      window.addEventListener('mouseup', onDragEnd);
+      window.addEventListener('touchmove', onDragMove, { passive: false });
+      window.addEventListener('touchend', onDragEnd);
+    }
   };
 
   // Manejar movimiento del arrastre
   const onDragMove = (e: MouseEvent | TouchEvent) => {
     if (!isDragging.value || !containerRef.value) return;
 
-    // Prevenir scroll de página durante swipe horizontal en mobile
-    if ('touches' in e) e.preventDefault();
-
     const currentX = 'clientX' in e ? e.clientX : (e.touches?.[0]?.clientX ?? 0);
+    const currentY = 'clientY' in e ? e.clientY : (e.touches?.[0]?.clientY ?? 0);
+
     const deltaX = currentX - dragStartX.value;
+    const deltaY = currentY - dragStartY.value;
+
+    // Determinar si es un arrastre horizontal en el primer movimiento perceptible
+    if (isHorizontalSwipe.value === null && 'touches' in e) {
+      if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+        isHorizontalSwipe.value = Math.abs(deltaX) > Math.abs(deltaY);
+      }
+    }
+
+    // Prevenir scroll nativo de la página únicamente si es arrastre horizontal intencional
+    if ('touches' in e && isHorizontalSwipe.value === true) {
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+    }
+
+    // Si es scroll vertical nativo en mobile, no arrastramos el carrusel
+    if ('touches' in e && isHorizontalSwipe.value === false) {
+      return;
+    }
 
     // Normalizar el offset por el ancho del contenedor para suavidad
     const containerWidth = containerRef.value.offsetWidth || 1;
@@ -112,6 +143,14 @@ export function useCylindricalCarousel(options: UseCylindricalCarouselOptions) {
   const onDragEnd = () => {
     if (!isDragging.value) return;
     isDragging.value = false;
+
+    // Remover listeners dinámicos del objeto global window
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('mousemove', onDragMove);
+      window.removeEventListener('mouseup', onDragEnd);
+      window.removeEventListener('touchmove', onDragMove);
+      window.removeEventListener('touchend', onDragEnd);
+    }
 
     const containerWidth = containerRef.value?.offsetWidth || 0;
     const offsetPixels = dragOffset.value * containerWidth;
@@ -127,6 +166,7 @@ export function useCylindricalCarousel(options: UseCylindricalCarouselOptions) {
 
     // Resetear el offset
     dragOffset.value = 0;
+    isHorizontalSwipe.value = null;
 
     // Reanudar autoplay después de un delay
     setTimeout(() => {
@@ -199,15 +239,9 @@ export function useCylindricalCarousel(options: UseCylindricalCarouselOptions) {
 
     const container = containerRef.value;
 
-    // Mouse events
+    // Iniciar arrastre con mousedown o touchstart
     container.addEventListener('mousedown', onDragStart);
-    window.addEventListener('mousemove', onDragMove);
-    window.addEventListener('mouseup', onDragEnd);
-
-    // Touch events — { passive: false } para poder llamar preventDefault y evitar scroll
     container.addEventListener('touchstart', onDragStart, { passive: true });
-    window.addEventListener('touchmove', onDragMove, { passive: false });
-    window.addEventListener('touchend', onDragEnd);
 
     // Keyboard events
     window.addEventListener('keydown', onKeyDown);
@@ -218,13 +252,12 @@ export function useCylindricalCarousel(options: UseCylindricalCarouselOptions) {
 
     const container = containerRef.value;
 
-    // Mouse events
     container.removeEventListener('mousedown', onDragStart);
+    container.removeEventListener('touchstart', onDragStart);
+
+    // Limpiar listeners dinámicos de window si quedaron activos
     window.removeEventListener('mousemove', onDragMove);
     window.removeEventListener('mouseup', onDragEnd);
-
-    // Touch events
-    container.removeEventListener('touchstart', onDragStart);
     window.removeEventListener('touchmove', onDragMove);
     window.removeEventListener('touchend', onDragEnd);
 

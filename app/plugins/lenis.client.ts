@@ -1,6 +1,18 @@
 import Lenis from 'lenis'
 
 export default defineNuxtPlugin((nuxtApp) => {
+  if (typeof window === 'undefined') return
+
+  // Desactivar Lenis en móviles y tablets para priorizar scroll nativo acelerado por hardware y reducir TBT
+  const isMobile = window.matchMedia('(max-width: 1023px)').matches
+  if (isMobile) {
+    return {
+      provide: {
+        lenis: null as Lenis | null
+      }
+    }
+  }
+
   const { $gsap, $ScrollTrigger } = nuxtApp as any
 
   const lenis = new Lenis({
@@ -28,7 +40,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   return {
     provide: {
-      lenis
+      lenis: lenis as Lenis | null
     }
   }
 })

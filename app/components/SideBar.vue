@@ -293,6 +293,6 @@ onUnmounted(() => {
 }
 
 .group:hover {
-  background-color: var(--hover-bg, rgba(var(--navbar-accent-color), 0.3));
+  background-color: var(--hover-bg, hsla(var(--navbar-accent-color-hsl), 0.3));
 }
 </style>
