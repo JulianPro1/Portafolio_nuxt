@@ -50,18 +50,20 @@ import DevelopmentTimeCard from '~/components/Projects/cards/DevelopmentTimeCard
 import TechnologiesCard from '~/components/Projects/cards/TechnologiesCard.vue'
 import ProductionLinkCard from '~/components/Projects/cards/ProductionLinkCard.vue'
 import { getCategoryConfig } from '~/constants/projectCategories'
-import { getProjectsData } from '~/data/projectsData'
+import type { ProjectSlide } from '~/types/projects'
 
 const props = defineProps<{
   category: string
 }>()
 
+const { data: projectsDoc } = await useAsyncData('projects', () => queryCollection('projectsList').first())
+
 const config = getCategoryConfig(props.category)
-const rawProjects = getProjectsData(props.category)
+const rawProjects = computed(() => ((projectsDoc.value as any)?.[props.category] || []) as ProjectSlide[])
 
 // Aplanar todos los proyectos de las diapositivas
 const allProjects = computed(() => {
-  return rawProjects.flatMap(slide => slide.cards)
+  return rawProjects.value.flatMap(slide => slide.cards)
 })
 
 let ctx: gsap.Context | null = null

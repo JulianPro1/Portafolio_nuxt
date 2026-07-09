@@ -109,7 +109,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { gsap } from 'gsap'
-import { getProjectsData } from '~/data/projectsData'
+import type { ProjectSlide } from '~/types/projects'
+
+const { data: projectsDoc } = await useAsyncData('projects', () => queryCollection('projectsList').first())
 
 const props = defineProps<{
   activeTab?: string
@@ -156,10 +158,13 @@ const bubbleStyle = computed(() => ({
 }))
 
 const categoriesWithProjects = computed(() =>
-  tabs.map(tab => ({
-    ...tab,
-    projects: getProjectsData(tab.id).flatMap((slide: any) => slide.cards),
-  })).filter(cat => cat.projects.length > 0)
+  tabs.map(tab => {
+    const slides = ((projectsDoc.value as any)?.[tab.id] || []) as ProjectSlide[];
+    return {
+      ...tab,
+      projects: slides.flatMap((slide) => slide.cards),
+    };
+  }).filter(cat => cat.projects.length > 0)
 )
 
 const toggleMenu = () => {

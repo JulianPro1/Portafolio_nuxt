@@ -21,20 +21,18 @@
       <div>
         <div class="mb-3 sm:mb-5 inline-flex items-center gap-2 rounded-full border border-about-accent bg-about-accent/10 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[0.6rem] sm:text-[0.65rem] font-bold uppercase tracking-[0.22em] text-about-accent-light">
           <span class="h-1.5 w-1.5 rounded-full bg-about-accent-light shadow-[0_0_12px_hsla(270,67%,45%,1)]"></span>
-          Frontend Developer
+          {{ item.badge }}
         </div>
 
-        <p class="text-xs sm:text-sm leading-relaxed text-global-text-muted">
-          Soy <span class="font-bold text-about-accent-light">Julian</span>, desarrollador frontend especializado en Vue, Nuxt y TypeScript. Construyo experiencias digitales rápidas, limpias y visualmente cuidadas, combinando performance, UX y detalle estético.
-        </p>
+        <p class="text-xs sm:text-sm leading-relaxed text-global-text-muted" v-html="item.cardDescription"></p>
       </div>
 
       <div class="mt-3 sm:mt-5 flex items-center justify-center gap-3">
         <PreviewCardButton
-          to="/about"
+          :to="item.href"
           variant="about"
         >
-          Saber más
+          {{ item.buttonText }}
         </PreviewCardButton>
       </div>
     </div>
@@ -42,17 +40,21 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import InteractiveMarquee from '@/components/Common/InteractiveMarquee.vue';
 import PreviewCardButton from '@/components/Index/PreviewCardButton.vue';
-
-interface TechSkill {
-  name: string;
-  icon?: string;
-}
+import type { PortfolioItemCard } from '~/types';
 
 interface Props {
-  techSkills: TechSkill[];
+  item: PortfolioItemCard;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
+
+const techSkills = computed(() => {
+  return props.item.details?.map(d => ({
+    name: d.label,
+    icon: d.icon
+  })) || [];
+});
 </script>

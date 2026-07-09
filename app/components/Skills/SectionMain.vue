@@ -137,7 +137,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import AnimatedElement from '@/components/Common/AnimatedElement.vue'
 import SectionTitle from '@/components/Common/SectionTitle.vue'
 import BaseModal from '@/components/Common/BaseModal.vue'
@@ -145,7 +145,15 @@ import BaseGradientButton from '@/components/Common/BaseGradientButton.vue'
 import SkillCard from '@/components/Skills/SkillCard.vue'
 import PrinciplesGroup from '@/components/Skills/PrinciplesGroup.vue'
 import type { Skill } from '@/types'
-import { skillsData } from '~/data/skillsData'
+
+interface DetailedSkillCategory {
+  name: string
+  description: string
+  icon: string
+  items: Skill[]
+}
+
+const { data: skillsDoc } = await useAsyncData('skills', () => queryCollection('skills').first())
 
 const selectedSkill = ref<Skill | null>(null)
 const isModalOpen = ref(false)
@@ -160,5 +168,5 @@ const closeSkillModal = () => {
 }
 
 // Data-driven categories configuration
-const categories = skillsData
+const categories = computed(() => ((skillsDoc.value as any)?.categories || []) as DetailedSkillCategory[])
 </script>

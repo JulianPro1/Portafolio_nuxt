@@ -12,138 +12,85 @@
 
     <div class="relative max-w-7xl mx-auto pb-24">
       <!-- Header del componente SectionTitle -->
-      <AnimatedElement variant="title" delay="300ms">
+      <AnimatedElement variant="title" delay="300ms" v-if="header">
         <SectionTitle
           domain="about"
-          badge="Conoceme"
-          title="Sobre"
-          highlight="Mí"
-          description="Explora mi historia, habilidades y trayectoria como desarrollador."
+          :badge="header.badge || 'Conóceme'"
+          :title="header.title || 'Sobre'"
+          :highlight="header.highlight || 'Mí'"
+          :description="header.description"
         />
       </AnimatedElement>
 
       <!-- Contenedor del Diagrama Interactivo Git Flow Alternado -->
-      <div class="max-w-5xl mx-auto py-12 flex flex-col gap-0 relative">
+      <div class="max-w-5xl mx-auto py-12 flex flex-col gap-0 relative" v-if="steps.length">
         
-        <!-- Fila 0: ¿Quién soy? (Par -> Izquierda en Desktop) -->
         <div 
-          data-index="0"
+          v-for="step in steps"
+          :key="step.index"
+          :data-index="step.index"
           class="step-row grid grid-cols-1 md:grid-cols-[1fr_6rem_1fr] items-stretch relative min-h-[180px] transition-all duration-500"
-          :class="[activeStep === 0 ? 'opacity-100 scale-[1.01]' : 'opacity-70 md:opacity-40 scale-[0.99]']"
+          :class="[activeStep === step.index ? 'opacity-100 scale-[1.01]' : 'opacity-70 md:opacity-40 scale-[0.99]']"
         >
-          <!-- Tarjeta de Contenido (Columna 1 en Desktop, Columna 2 en Móvil) -->
-          <div class="step-card col-span-1 md:col-start-1 md:col-end-2 flex items-center md:justify-end pb-10 w-full">
+          <!-- Elemento Izquierdo (Columna 1 en Desktop, Columna 2 en Móvil para contenido, oculta para panel) -->
+          <div 
+            v-if="step.index % 2 === 0"
+            class="step-card col-span-1 md:col-start-1 md:col-end-2 flex items-center md:justify-end pb-10 w-full opacity-0"
+          >
             <div class="w-full">
-              <AboutCard title="¿Quién soy?">
-                <AboutWhoAmI />
+              <AboutCard 
+                :title="step.title"
+                :button-text="step.buttonText"
+                :button-to="step.buttonTo"
+                :button-icon="step.buttonIcon"
+              >
+                <component :is="contentComponents[step.contentComponent]" v-if="step.contentComponent" :data="step.contentData" />
+              </AboutCard>
+            </div>
+          </div>
+          <div 
+            v-else
+            class="step-panel hidden md:flex md:col-start-1 md:col-end-2 items-center justify-end pb-10 w-full pr-8 opacity-0"
+          >
+            <component 
+              :is="widgetComponents[step.widgetType]" 
+              v-model="selectedAgentFile"
+              :contributions="githubContributions"
+              :is-active="activeStep === step.index"
+            />
+          </div>
+
+          <!-- Diagrama Track (Columna 2 en Desktop, Columna 1 en Móvil) -->
+          <DiagramTrack :step-index="step.index" :active-step="activeStep" :is-desktop="isDesktop" />
+
+          <!-- Elemento Derecho (Columna 3 en Desktop, Columna 2 en Móvil para contenido, oculta para panel) -->
+          <div 
+            v-if="step.index % 2 === 0"
+            class="step-panel hidden md:flex md:col-start-3 md:col-end-4 items-center pb-10 w-full pl-8 opacity-0"
+          >
+            <component 
+              :is="widgetComponents[step.widgetType]" 
+              v-model="selectedAgentFile"
+              :contributions="githubContributions"
+              :is-active="activeStep === step.index"
+            />
+          </div>
+          <div 
+            v-else
+            class="step-card col-span-1 md:col-start-3 md:col-end-4 flex items-center md:justify-start pb-10 w-full opacity-0"
+          >
+            <div class="w-full">
+              <AboutCard 
+                :title="step.title"
+                :button-text="step.buttonText"
+                :button-to="step.buttonTo"
+                :button-icon="step.buttonIcon"
+              >
+                <component :is="contentComponents[step.contentComponent]" v-if="step.contentComponent" :data="step.contentData" />
               </AboutCard>
             </div>
           </div>
 
-          <!-- Diagrama Track (Columna 2 en Desktop, Columna 1 en Móvil) -->
-          <DiagramTrack :step-index="0" :active-step="activeStep" :is-desktop="isDesktop" />
-
-          <!-- Panel de Configuración JSON (Columna 3 en Desktop, oculta en Móvil) -->
-          <div class="step-panel hidden md:flex md:col-start-3 md:col-end-4 items-center pb-10 w-full pl-8">
-            <JsonConfigCard />
-          </div>
-
-        </div>
-
-        <!-- Fila 1: Experiencia Laboral (Impar -> Derecha en Desktop) -->
-        <div 
-          data-index="1"
-          class="step-row grid grid-cols-1 md:grid-cols-[1fr_6rem_1fr] items-stretch relative min-h-[180px] transition-all duration-500"
-          :class="[activeStep === 1 ? 'opacity-100 scale-[1.01]' : 'opacity-70 md:opacity-40 scale-[0.99]']"
-        >
-          <!-- Gráfico de Contribuciones de GitHub (Columna 1 en Desktop, oculta en Móvil) -->
-          <div class="step-panel hidden md:flex md:col-start-1 md:col-end-2 items-center justify-end pb-10 w-full pr-8">
-            <GithubContributionsCard :contributions="githubContributions" :is-active="activeStep === 1" />
-          </div>
-
-          <!-- Diagrama Track (Columna 2 en Desktop, Columna 1 en Móvil) -->
-          <DiagramTrack :step-index="1" :active-step="activeStep" :is-desktop="isDesktop" />
-
-          <!-- Tarjeta de Contenido (Columna 3 en Desktop, Columna 2 en Móvil) -->
-          <div class="step-card col-span-1 md:col-start-3 md:col-end-4 flex items-center md:justify-start pb-10 w-full">
-            <div class="w-full">
-              <AboutCard title="Experiencia Laboral">
-                <AboutExperience :is-active="activeStep === 1" />
-              </AboutCard>
-            </div>
-          </div>
-        </div>
-
-        <!-- Fila 2: Habilidades Efectivas (Par -> Izquierda en Desktop) -->
-        <div 
-          data-index="2"
-          class="step-row grid grid-cols-1 md:grid-cols-[1fr_6rem_1fr] items-stretch relative min-h-[180px] transition-all duration-500"
-          :class="[activeStep === 2 ? 'opacity-100 scale-[1.01]' : 'opacity-70 md:opacity-40 scale-[0.99]']"
-        >
-          <!-- Tarjeta de Contenido (Columna 1 en Desktop, Columna 2 en Móvil) -->
-          <div class="step-card col-span-1 md:col-start-1 md:col-end-2 flex items-center md:justify-end pb-10 w-full">
-            <div class="w-full">
-              <AboutCard title="Habilidades Efectivas">
-                <AboutSkills />
-              </AboutCard>
-            </div>
-          </div>
-
-          <!-- Diagrama Track (Columna 2 en Desktop, Columna 1 en Móvil) -->
-          <DiagramTrack :step-index="2" :active-step="activeStep" :is-desktop="isDesktop" />
-
-          <!-- Editor VS Code: Arquitectura de Agentes (Columna 3 en Desktop, oculta en Móvil) -->
-          <div class="step-panel hidden md:flex md:col-start-3 md:col-end-4 items-center pb-10 w-full pl-8">
-            <AgentEditorCard v-model="selectedAgentFile" :files="agentFiles" :is-active="activeStep === 2" />
-          </div>
-        </div>
-
-        <!-- Fila 3: Estudios Universitarios (Impar -> Derecha en Desktop) -->
-        <div 
-          data-index="3"
-          class="step-row grid grid-cols-1 md:grid-cols-[1fr_6rem_1fr] items-stretch relative min-h-[180px] transition-all duration-500"
-          :class="[activeStep === 3 ? 'opacity-100 scale-[1.01]' : 'opacity-70 md:opacity-40 scale-[0.99]']"
-        >
-          <!-- Terminal de Grado IUJO (Columna 1 en Desktop, oculta en Móvil) -->
-          <div class="step-panel hidden md:flex md:col-start-1 md:col-end-2 items-center justify-end pb-10 w-full pr-8">
-            <TerminalGraduationCard :is-active="activeStep === 3" />
-          </div>
-
-          <!-- Diagrama Track (Columna 2 en Desktop, Columna 1 en Móvil) -->
-          <DiagramTrack :step-index="3" :active-step="activeStep" :is-desktop="isDesktop" />
-
-          <!-- Tarjeta de Contenido (Columna 3 en Desktop, Columna 2 en Móvil) -->
-          <div class="step-card col-span-1 md:col-start-3 md:col-end-4 flex items-center md:justify-start pb-10 w-full">
-            <div class="w-full">
-              <AboutCard title="Estudios Universitarios">
-                <AboutEducation />
-              </AboutCard>
-            </div>
-          </div>
-        </div>
-
-        <!-- Fila 4: Filosofía de Código (Par -> Izquierda en Desktop) -->
-        <div 
-          data-index="4"
-          class="step-row grid grid-cols-1 md:grid-cols-[1fr_6rem_1fr] items-stretch relative min-h-[180px] transition-all duration-500"
-          :class="[activeStep === 4 ? 'opacity-100 scale-[1.01]' : 'opacity-70 md:opacity-40 scale-[0.99]']"
-        >
-          <!-- Tarjeta de Contenido (Columna 1 en Desktop, Columna 2 en Móvil) -->
-          <div class="step-card col-span-1 md:col-start-1 md:col-end-2 flex items-center md:justify-end pb-10 w-full">
-            <div class="w-full">
-              <AboutCard title="Filosofía de Código">
-                <AboutPhilosophy />
-              </AboutCard>
-            </div>
-          </div>
-
-          <!-- Diagrama Track (Columna 2 en Desktop, Columna 1 en Móvil) -->
-          <DiagramTrack :step-index="4" :active-step="activeStep" :is-desktop="isDesktop" />
-
-          <!-- Panel de Calidad de Código (Columna 3 en Desktop, oculta en Móvil) -->
-          <div class="step-panel hidden md:flex md:col-start-3 md:col-end-4 items-center pb-10 w-full pl-8">
-            <QualityDashboardCard :is-active="activeStep === 4" />
-          </div>
         </div>
 
       </div>
@@ -152,7 +99,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue';
 import SectionTitle from '@/components/Common/SectionTitle.vue';
 import AboutCard from '@/components/About/AboutCard.vue';
 import AnimatedElement from '@/components/Common/AnimatedElement.vue';
@@ -162,12 +109,31 @@ import AgentEditorCard from '@/components/About/AgentEditorCard.vue';
 import TerminalGraduationCard from '@/components/About/TerminalGraduationCard.vue';
 import QualityDashboardCard from '@/components/About/QualityDashboardCard.vue';
 import DiagramTrack from '@/components/About/DiagramTrack.vue';
-import AboutWhoAmI from '@/components/About/AboutWhoAmI.vue';
-import AboutExperience from '@/components/About/AboutExperience.vue';
-import AboutSkills from '@/components/About/AboutSkills.vue';
-import AboutEducation from '@/components/About/AboutEducation.vue';
-import AboutPhilosophy from '@/components/About/AboutPhilosophy.vue';
 import { useAboutOrchestratorAnimations } from '@/composables/about/useAboutOrchestratorAnimations';
+
+// Componentes de contenido de los pasos
+import AboutWhoAmIContent from '@/components/About/Content/AboutWhoAmIContent.vue';
+import AboutExperienceContent from '@/components/About/Content/AboutExperienceContent.vue';
+import AboutSkillsContent from '@/components/About/Content/AboutSkillsContent.vue';
+import AboutEducationContent from '@/components/About/Content/AboutEducationContent.vue';
+import AboutPhilosophyContent from '@/components/About/Content/AboutPhilosophyContent.vue';
+
+const contentComponents = {
+  AboutWhoAmIContent,
+  AboutExperienceContent,
+  AboutSkillsContent,
+  AboutEducationContent,
+  AboutPhilosophyContent
+};
+
+// Registro de los componentes dinámicos de los widgets
+const widgetComponents = {
+  JsonConfigCard,
+  GithubContributionsCard,
+  AgentEditorCard,
+  TerminalGraduationCard,
+  QualityDashboardCard
+};
 
 const activeStep = ref(0);
 const isDesktop = ref(false);
@@ -175,72 +141,13 @@ const isDesktop = ref(false);
 // Estado para el visor de la arquitectura de agentes
 const selectedAgentFile = ref('AGENT.md');
 
-const agentFiles = {
-  'AGENT.md': {
-    title: 'AGENT.md',
-    content: 'Coordinador central del sistema. Supervisa la ejecución de objetivos y orquesta las tareas complejas distribuyendo el trabajo en sub-agentes especializados.\n\n• Estado: Activo\n• Rol: Principal Supervisor\n• Dependencias: skills/*, sub-agents/*'
-  },
-  'coder.md': {
-    title: 'coder.md',
-    content: 'Especialista en desarrollo frontend.\n\n• Tareas:\n  - Escribir e iterar componentes Vue/Nuxt\n  - Implementar diseños responsive con Tailwind\n  - Mantener refactorizaciones limpias'
-  },
-  'documenter.md': {
-    title: 'documenter.md',
-    content: 'Especialista en documentación.\n\n• Tareas:\n  - Escribir especificaciones y planes de desarrollo\n  - Generar bitácoras y resúmenes de cambios'
-  },
-  'summary.md': {
-    title: 'summary.md',
-    content: 'Especialista en síntesis.\n\n• Tareas:\n  - Analizar el estado de tareas y redactar walkthroughs de alto nivel para el usuario final'
-  },
-  'tasker.md': {
-    title: 'tasker.md',
-    content: 'Gestor del checklist de tareas.\n\n• Tareas:\n  - Mantener y sincronizar el archivo de tareas (task.md) marcando pendientes y progresos'
-  },
-  'tester.md': {
-    title: 'tester.md',
-    content: 'Encargado del control de calidad.\n\n• Tareas:\n  - Ejecutar suites de test\n  - Validar reglas de linter y analizar errores de compilación'
-  },
-  'viewer.md': {
-    title: 'viewer.md',
-    content: 'Sub-agente de lectura y análisis de código.\n\n• Tareas:\n  - Leer archivos locales\n  - Analizar árboles de directorios\n  - Proveer contexto semántico'
-  },
-  'nuxt.md': {
-    title: 'nuxt.md (Skills)',
-    content: 'Tecnología: Nuxt.js\n• Nivel: Experto\n• Características:\n  - SSR & SSG avanzados\n  - Estructura basada en directorios\n  - Middleware e integraciones de servidor (h3)\n  - Optimización SEO y rendimiento web'
-  },
-  'astro.md': {
-    title: 'astro.md (Skills)',
-    content: 'Tecnología: Astro\n• Nivel: Avanzado\n• Características:\n  - Arquitectura de islas (Islands Architecture)\n  - Cero JavaScript del lado del cliente por defecto\n  - Integraciones dinámicas de múltiples frameworks\n  - Rendimiento óptimo en carga estática'
-  },
-  'vue.md': {
-    title: 'vue.md (Skills)',
-    content: 'Tecnología: Vue.js\n• Nivel: Experto\n• Características:\n  - Composition API & Reactividad profunda\n  - Gestión de estado global con Pinia\n  - Vue Router & Transiciones de página avanzadas\n  - Creación de componentes altamente reutilizables'
-  },
-  'gsap.md': {
-    title: 'gsap.md (Skills)',
-    content: 'Tecnología: GSAP (GreenSock)\n• Nivel: Avanzado\n• Características:\n  - Timelines y secuencias dinámicas de animación\n  - ScrollTrigger para efectos basados en el scroll del usuario\n  - Animaciones fluidas de hardware-accelerated\n  - Microinteracciones responsivas de alto impacto visual'
-  },
-  'tailwind.md': {
-    title: 'tailwind.md (Skills)',
-    content: 'Tecnología: Tailwind CSS\n• Nivel: Experto\n• Características:\n  - Maquetación rápida utility-first\n  - Customización mediante tailwind.config\n  - Arbitrary values y layouts complejos de Grid/Flexbox\n  - Animaciones y transiciones de estado personalizadas'
-  },
-  'bootstrap.md': {
-    title: 'bootstrap.md (Skills)',
-    content: 'Tecnología: Bootstrap\n• Nivel: Avanzado\n• Características:\n  - Grid system robusto y layouts consistentes\n  - Personalización mediante variables Sass/SCSS\n  - Prototipado y maquetación ágil de componentes responsivos'
-  },
-  'scss.md': {
-    title: 'scss.md (Skills)',
-    content: 'Tecnología: SCSS / SASS\n• Nivel: Avanzado\n• Características:\n  - Uso avanzado de Mixins, Funciones y Directivas\n  - Estructuración modular de hojas de estilo (Pattern 7-1)\n  - Anidamientos lógicos y uso de BEM'
-  },
-  'angular.md': {
-    title: 'angular.md (Skills)',
-    content: 'Tecnología: Angular\n• Nivel: Intermedio\n• Características:\n  - Estructuración por módulos y componentes en TS\n  - Data binding bidireccional y directivas personalizadas\n  - Integración básica con RxJS para programación reactiva'
-  },
-  'etc.md': {
-    title: 'etc.md (Otras Habilidades)',
-    content: 'Otras Herramientas & Tecnologías\n• Control de Versiones: Git & GitHub\n• Lenguajes: JavaScript (ES6+), HTML5, CSS3\n• Entornos: Node.js, npm, pnpm, Bun\n• Bundlers: Vite, Webpack\n• Diseño UI/UX: Figma (lectura e interpretación de mockups)'
-  }
-};
+// Consultas asíncronas de Nuxt Content v3
+const { data: aboutIndex } = await useAsyncData('about-index', () => 
+  queryCollection('about').where('path', '=', '/about').first()
+);
+
+const header = computed(() => aboutIndex.value || null);
+const steps = computed(() => aboutIndex.value?.steps || []);
 
 // Estado para el gráfico de contribuciones de GitHub
 const githubContributions = ref([]);
@@ -251,11 +158,26 @@ const checkBreakpoint = () => {
   }
 };
 
-const { init: initAnimations } = useAboutOrchestratorAnimations(activeStep, isDesktop);
+const { init: initAnimations, cleanup: cleanupAnimations } = useAboutOrchestratorAnimations(activeStep, isDesktop);
 
-onMounted(() => {
+// Inicializar animaciones GSAP de forma segura cuando los datos estén listos en el DOM
+watch(steps, async (newSteps) => {
+  if (newSteps && newSteps.length > 0 && import.meta.client) {
+    cleanupAnimations();
+    await nextTick();
+    initAnimations('.max-w-5xl');
+  }
+});
+
+onMounted(async () => {
   checkBreakpoint();
   window.addEventListener('resize', checkBreakpoint);
+
+  if (steps.value && steps.value.length > 0 && import.meta.client) {
+    cleanupAnimations();
+    await nextTick();
+    initAnimations('.max-w-5xl');
+  }
 
   // Generar celdas de contribuciones de GitHub con colores armónicos
   const levels = [
@@ -284,9 +206,6 @@ onMounted(() => {
     });
   }
   githubContributions.value = contributions;
-
-  // Inicializar animaciones GSAP vía composable
-  initAnimations('.max-w-5xl');
 });
 
 onUnmounted(() => {

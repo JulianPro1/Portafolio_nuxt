@@ -40,42 +40,44 @@ export const useAboutOrchestratorAnimations = (
             trigger: row,
             start: 'top 85%',
             end: 'bottom 15%',
-            toggleActions: 'play none none reverse'
+            toggleActions: 'play none none none'
           }
         });
 
         if (card) {
           const fromState = isDesktop.value
-            ? { opacity: 0, x: index % 2 === 0 ? -60 : 60, y: 0, scale: 0.95 }
-            : { opacity: 0, x: 0, y: 40, scale: 0.97 };
+            ? { opacity: 0, x: index % 2 === 0 ? -40 : 40, y: 20, scale: 0.98 }
+            : { opacity: 0, x: 0, y: 35, scale: 0.98 };
 
           entryTimeline.fromTo(card,
             fromState,
-            { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.8, ease: 'power2.out' }
+            { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.9, ease: 'power4.out' }
           );
         }
 
         if (panel) {
-          const slideX = isDesktop.value ? (index % 2 === 0 ? 60 : -60) : 30;
-          const rotationY = isDesktop.value ? (index % 2 === 0 ? 12 : -12) : 5;
+          const slideX = isDesktop.value ? (index % 2 === 0 ? 40 : -40) : 0;
+          const rotationY = isDesktop.value ? (index % 2 === 0 ? 5 : -5) : 0;
 
           entryTimeline.fromTo(panel,
             {
               opacity: 0,
               x: slideX,
+              y: isDesktop.value ? 20 : 35,
               rotationY: rotationY,
-              scale: 0.95,
+              scale: 0.98,
               transformPerspective: 1000
             },
             {
               opacity: 1,
               x: 0,
+              y: 0,
               rotationY: 0,
               scale: 1,
-              duration: 0.8,
-              ease: 'power3.out'
+              duration: 0.9,
+              ease: 'power4.out'
             },
-            '-=0.6'
+            '-=0.7'
           );
 
           // Animaciones secundarias específicas para ciertos paneles
@@ -91,10 +93,10 @@ export const useAboutOrchestratorAnimations = (
                   from: 'random',
                   amount: 0.5
                 },
-                duration: 0.4,
-                ease: 'back.out(1.5)'
+                duration: 0.45,
+                ease: 'power4.out'
               },
-              '-=0.2'
+              '-=0.3'
             );
           }
         }
@@ -102,7 +104,7 @@ export const useAboutOrchestratorAnimations = (
         if (node) {
           entryTimeline.fromTo(node,
             { scale: 0, opacity: 0 },
-            { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(2)' },
+            { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.5)' },
             '-=0.8'
           );
         }

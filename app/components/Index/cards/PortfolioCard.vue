@@ -56,9 +56,9 @@
 import { computed } from 'vue';
 
 interface Props {
-  title: string;
-  description: string;
-  icon: string;
+  title?: string;
+  description?: string;
+  icon?: string;
   isActive?: boolean;
   borderColor?: string;
   gradientFrom?: string;
@@ -67,6 +67,9 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  title: '',
+  description: '',
+  icon: '',
   isActive: false,
   borderColor: 'border-about-accent-dark/80',
   gradientFrom: 'from-about-accent',

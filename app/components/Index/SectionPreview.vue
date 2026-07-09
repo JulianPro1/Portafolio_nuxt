@@ -82,29 +82,29 @@
         <template #card="{ index, isActive }">
           <AnimatedElement :variant="isActive ? 'carouselCard' : 'card'" :delay="isActive ? '300ms' : '0ms'">
             <PortfolioCard
-              :title="portfolioItems[index]!.title"
-              :description="portfolioItems[index]!.description"
-              :icon="portfolioItems[index]!.icon"
               :is-active="isActive"
-              :border-color="getBorderColor(portfolioItems[index]!.id)"
-              :gradient-from="getGradientFrom(portfolioItems[index]!.id)"
-              :gradient-to="getGradientTo(portfolioItems[index]!.id)"
-              :text-color="getTextColor(portfolioItems[index]!.id)"
+              :border-color="getBorderColor(portfolioItems[index]?.id || 'about')"
+              :gradient-from="getGradientFrom(portfolioItems[index]?.id || 'about')"
+              :gradient-to="getGradientTo(portfolioItems[index]?.id || 'about')"
+              :text-color="getTextColor(portfolioItems[index]?.id || 'about')"
             >
               <!-- Lazy mount: solo renderiza el contenido cuando la card fue activa al menos 1 vez -->
-              <template v-if="mountedCards.has(portfolioItems[index]!.id)">
+              <template v-if="portfolioItems[index] && mountedCards.has(portfolioItems[index].id)">
                 <AboutPreviewCardContent
-                  v-if="portfolioItems[index]!.id === 'about'"
-                  :tech-skills="techSkillsData"
+                  v-if="portfolioItems[index].id === 'about'"
+                  :item="portfolioItems[index]"
                 />
                 <ProjectsPreviewCardContent
-                  v-else-if="portfolioItems[index]!.id === 'projects'"
+                  v-else-if="portfolioItems[index].id === 'projects'"
+                  :item="portfolioItems[index]"
                 />
                 <SkillsPreviewCardContent
-                  v-else-if="portfolioItems[index]!.id === 'skills'"
+                  v-else-if="portfolioItems[index].id === 'skills'"
+                  :item="portfolioItems[index]"
                 />
                 <ContactPreviewCardContent
-                  v-else-if="portfolioItems[index]!.id === 'contact'"
+                  v-else-if="portfolioItems[index].id === 'contact'"
+                  :item="portfolioItems[index]"
                 />
               </template>
               <!-- Skeleton mientras la card no ha sido visitada -->
@@ -127,8 +127,12 @@ import ProjectsPreviewCardContent from '~/components/Index/cards/ProjectsPreview
 import SkillsPreviewCardContent from '~/components/Index/cards/SkillsPreviewCardContent.vue';
 import PreviewCardSkeleton from '~/components/Index/cards/PreviewCardSkeleton.vue';
 import AnimatedElement from '@/components/Common/AnimatedElement.vue';
-import { techSkillsData } from '~/data/aboutTechData';
 import { gsap } from 'gsap';
+
+import type { PortfolioItemCard } from '~/types';
+
+const { data: portfolioDoc } = await useAsyncData('portfolio-preview', () => queryCollection('portfolioPreview').first())
+const portfolioItems = computed(() => ((portfolioDoc.value as any)?.items || []) as PortfolioItemCard[])
 
 const isMobile = ref(false);
 const carouselRef = ref<any>(null);
@@ -165,7 +169,7 @@ const onCarouselChange = (index: number) => {
   }
   activeIndex.value = index;
   // Marcar la card como montada para lazy-render
-  const id = portfolioItems[index]?.id;
+  const id = portfolioItems.value[index]?.id;
   if (id && !mountedCards.value.has(id)) {
     mountedCards.value = new Set([...mountedCards.value, id]);
   }
@@ -237,7 +241,7 @@ const onCarouselDragEnd = () => {
   });
 };
 
-const currentItemId = computed(() => portfolioItems[activeIndex.value]?.id || 'about');
+const currentItemId = computed(() => portfolioItems.value[activeIndex.value]?.id || 'about');
 
 const arrowBorderColor = computed(() => {
   const borderColors: Record<string, string> = {
@@ -358,13 +362,6 @@ const carouselCardHeight = computed(() => (isMobile.value ? 370 : 400));
 const carouselScaleStep = computed(() => (isMobile.value ? 0.15 : 0.08));
 const carouselOpacityStep = computed(() => (isMobile.value ? 0.35 : 0.18));
 
-interface PortfolioItem {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  href: string;
-}
 
 const getBorderColor = (id: string): string => {
   const colors: Record<string, string> = {
@@ -406,35 +403,6 @@ const getTextColor = (id: string): string => {
   return colors[id] || 'text-about-accent';
 };
 
-const portfolioItems: PortfolioItem[] = [
-  {
-    id: 'about',
-    title: 'Sobre Mí',
-    description: 'Conoce mi historia, habilidades y trayectoria como desarrollador frontend.',
-    icon: 'mdi:account',
-    href: '/about',
-  },
-  {
-    id: 'projects',
-    title: 'Proyectos',
-    description: 'Explora mis proyectos más recientes y destacados en desarrollo web.',
-    icon: 'mdi:folder-multiple',
-    href: '/projects',
-  },
-  {
-    id: 'skills',
-    title: 'Habilidades',
-    description: 'Descubre las tecnologías y herramientas que domino profesionalmente.',
-    icon: 'mdi:tools',
-    href: '/skills',
-  },
-  {
-    id: 'contact',
-    title: 'Contacto',
-    description: 'Conéctate conmigo para colaborar en proyectos o simplemente saludar.',
-    icon: 'mdi:email',
-    href: '/contact',
-  },
-];
+// portfolioItems is loaded dynamically from Nuxt Content portfolioPreview
 </script>
 

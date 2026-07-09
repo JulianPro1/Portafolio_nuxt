@@ -5,9 +5,10 @@
   >
     <!-- Línea de progreso de scroll -->
     <div
-      class="absolute bottom-0 left-0 h-[2px] pointer-events-none transition-all duration-300"
+      class="absolute bottom-0 left-0 h-[2px] w-full pointer-events-none"
+      style="transform-origin: left; transition: opacity 0.3s ease, box-shadow 0.3s ease; will-change: transform;"
       :style="{
-        width: `${scrollProgress}%`,
+        transform: `scaleX(${scrollProgress / 100})`,
         background: `linear-gradient(to right, ${backgroundStore.navbarAccentColor}, ${backgroundStore.navbarHighlightColor}, ${scrollSecondaryColor})`,
         opacity: scrollProgress > 2 ? 1 : 0,
         boxShadow: `0 0 8px ${backgroundStore.navbarAccentColor}80`
@@ -147,8 +148,15 @@ const navbarDynamicStyle = computed(() => {
   };
 });
 
+let ticking = false;
 const handleScroll = () => {
-  scrollY.value = window.scrollY;
+  if (!ticking) {
+    window.requestAnimationFrame(() => {
+      scrollY.value = window.scrollY;
+      ticking = false;
+    });
+    ticking = true;
+  }
 };
 
 onMounted(() => {

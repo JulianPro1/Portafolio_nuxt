@@ -6,22 +6,20 @@
     <div class="relative z-10 mb-3 sm:mb-5 flex items-center justify-between gap-3">
       <div class="inline-flex items-center gap-2 rounded-full border border-projects-accent bg-projects-accent/10 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[0.6rem] sm:text-[0.65rem] font-bold uppercase tracking-[0.22em] text-projects-accent-light">
         <span class="h-1.5 w-1.5 rounded-full bg-projects-accent-light shadow-[0_0_12px_hsla(50,80%,48%,0.9)]"></span>
-        Portafolio
+        {{ item.badge }}
       </div>
     </div>
 
     <div class="relative z-10 flex flex-1 flex-col justify-between">
       <div>
         <h3 class="mb-2 sm:mb-3 text-xl sm:text-2xl font-black leading-tight text-global-text">
-          Mis
+          {{ item.titlePrefix }}
           <span class="block bg-gradient-to-r from-projects-accent to-projects-accent-light bg-clip-text text-transparent">
-            Proyectos
+            {{ item.titleHighlight }}
           </span>
         </h3>
 
-        <p class="text-xs sm:text-sm leading-relaxed text-global-text-muted">
-          Explora proyectos reales que combinan performance, diseño y soluciones técnicas. Desde aplicaciones enterprise hasta herramientas personales.
-        </p>
+        <p class="text-xs sm:text-sm leading-relaxed text-global-text-muted" v-html="item.cardDescription"></p>
       </div>
 
       <div class="mt-3 sm:mt-5 space-y-3 sm:space-y-4">
@@ -38,11 +36,11 @@
         </div>
 
         <PreviewCardButton
-          to="/projects"
+          :to="item.href"
           variant="projects"
           full-width
         >
-          Ver proyectos
+          {{ item.buttonText }}
         </PreviewCardButton>
 
     </div>
@@ -51,7 +49,13 @@
 </template>
 
 <script setup lang="ts">
-import { projectStatsData } from '~/data/projectsPreviewData';
+import { computed } from 'vue';
+import type { PortfolioItemCard } from '~/types';
 import PreviewCardButton from '@/components/Index/PreviewCardButton.vue';
 
+const props = defineProps<{
+  item: PortfolioItemCard
+}>();
+
+const projectStatsData = computed(() => props.item.details || []);
 </script>

@@ -1,0 +1,553 @@
+{
+  "destacados": [
+    {
+      "cards": [
+        {
+          "id": "1",
+          "title": "E-Commerce Platform",
+          "category": "Fullstack",
+          "description": "Plataforma de comercio electrónico completa con carrito de compras, pasarela de pago y panel de administración.",
+          "icon": "mdi:shopping",
+          "technologies": [
+            "Vue.js",
+            "Node.js",
+            "MongoDB",
+            "Stripe"
+          ],
+          "liveUrl": "https://demo-ecommerce.com",
+          "githubUrl": "https://github.com/usuario/ecommerce-platform",
+          "collaborators": 5,
+          "developmentTime": "4 meses",
+          "showTechCard": true,
+          "showProductionLink": true
+        },
+        {
+          "id": "2",
+          "title": "Task Management App",
+          "category": "Productividad",
+          "description": "Aplicación web para gestión de tareas con drag & drop, notificaciones y colaboración en tiempo real.",
+          "icon": "mdi:clipboard-check",
+          "technologies": [
+            "React",
+            "Firebase",
+            "TailwindCSS",
+            "Vercel"
+          ],
+          "liveUrl": "https://taskmanager-demo.com",
+          "githubUrl": "https://github.com/usuario/task-management",
+          "collaborators": 3,
+          "developmentTime": "3 meses",
+          "showTechCard": true,
+          "showProductionLink": true
+        },
+        {
+          "id": "3",
+          "title": "Social Media Dashboard",
+          "category": "Analytics",
+          "description": "Dashboard analítico para redes sociales con gráficos interactivos y reportes personalizados.",
+          "icon": "mdi:chart-line",
+          "technologies": [
+            "Next.js",
+            "TypeScript",
+            "Prisma",
+            "PostgreSQL"
+          ],
+          "liveUrl": "https://social-dashboard.com",
+          "githubUrl": "https://github.com/usuario/social-dashboard",
+          "collaborators": 4,
+          "developmentTime": "5 meses",
+          "showTechCard": true,
+          "showProductionLink": true
+        }
+      ]
+    },
+    {
+      "cards": [
+        {
+          "id": "4",
+          "title": "Banking Portal",
+          "category": "FinTech",
+          "description": "Portal bancario seguro con transferencias, gestión de cuentas y dashboard financiero en tiempo real.",
+          "icon": "mdi:bank",
+          "technologies": [
+            "Vue.js",
+            "Node.js",
+            "PostgreSQL",
+            "Docker"
+          ],
+          "liveUrl": "https://banking-fintech.com",
+          "githubUrl": "https://github.com/usuario/banking-portal",
+          "collaborators": 8,
+          "developmentTime": "8 meses",
+          "showTechCard": true,
+          "showProductionLink": true
+        },
+        {
+          "id": "5",
+          "title": "Learning Management System",
+          "category": "Education",
+          "description": "Sistema de gestión educativa con cursos interactivos, seguimiento de progreso y certificados digitales.",
+          "icon": "mdi:school",
+          "technologies": [
+            "React",
+            "Python",
+            "AWS",
+            "MongoDB"
+          ],
+          "liveUrl": "https://lms-edutech.com",
+          "githubUrl": "https://github.com/usuario/lms-system",
+          "collaborators": 6,
+          "developmentTime": "6 meses",
+          "showTechCard": true,
+          "showProductionLink": true
+        },
+        {
+          "id": "6",
+          "title": "Healthcare Platform",
+          "category": "Health",
+          "description": "Plataforma médica para citas online, historial clínico y telemedicina con videoconferencias integradas.",
+          "icon": "mdi:medical-bag",
+          "technologies": [
+            "Next.js",
+            "TypeScript",
+            "WebRTC",
+            "MySQL"
+          ],
+          "liveUrl": "https://health-platform.com",
+          "githubUrl": "https://github.com/usuario/healthcare-platform",
+          "collaborators": 7,
+          "developmentTime": "7 meses",
+          "showTechCard": true,
+          "showProductionLink": true
+        }
+      ]
+    },
+    {
+      "cards": [
+        {
+          "id": "7",
+          "title": "AI Content Generator",
+          "category": "AI/ML",
+          "description": "Plataforma de generación de contenido asistida por IA con plantillas personalizables y optimización SEO.",
+          "icon": "mdi:robot",
+          "technologies": [
+            "Vue.js",
+            "Python",
+            "OpenAI",
+            "TailwindCSS"
+          ],
+          "liveUrl": "https://ai-generator.com",
+          "githubUrl": "https://github.com/usuario/ai-content-generator",
+          "collaborators": 4,
+          "developmentTime": "4 meses",
+          "showTechCard": true,
+          "showProductionLink": true
+        },
+        {
+          "id": "8",
+          "title": "Real Estate CRM",
+          "category": "Real Estate",
+          "description": "Sistema CRM especializado para agentes inmobiliarios con gestión de propiedades y clientes integrada.",
+          "icon": "mdi:home-city",
+          "technologies": [
+            "React",
+            "Node.js",
+            "PostgreSQL",
+            "Mapbox"
+          ],
+          "liveUrl": "https://realestate-crm.com",
+          "githubUrl": "https://github.com/usuario/realestate-crm",
+          "collaborators": 3,
+          "developmentTime": "3 meses",
+          "showTechCard": true,
+          "showProductionLink": true
+        },
+        {
+          "id": "9",
+          "title": "Fitness Tracker App",
+          "category": "Mobile",
+          "description": "Aplicación móvil para seguimiento de entrenamientos con gamificación y comunidad integrada.",
+          "icon": "mdi:run-fast",
+          "technologies": [
+            "React Native",
+            "Firebase",
+            "Redux",
+            "Charts.js"
+          ],
+          "liveUrl": "https://fitness-tracker.com",
+          "githubUrl": "https://github.com/usuario/fitness-tracker",
+          "collaborators": 2,
+          "developmentTime": "2 meses",
+          "showTechCard": true,
+          "showProductionLink": true
+        }
+      ]
+    }
+  ],
+  "en-produccion": [
+    {
+      "cards": [
+        {
+          "id": "10",
+          "title": "Banking Portal",
+          "category": "FinTech",
+          "description": "Portal bancario seguro con transferencias, gestión de cuentas y dashboard financiero en tiempo real.",
+          "icon": "mdi:bank",
+          "technologies": [
+            "Vue.js",
+            "Node.js",
+            "PostgreSQL",
+            "Docker"
+          ],
+          "liveUrl": "https://banking-fintech.com",
+          "caseStudyUrl": "https://case-study.banking.com",
+          "collaborators": 8,
+          "developmentTime": "8 meses",
+          "showTechCard": true,
+          "showProductionLink": true
+        },
+        {
+          "id": "11",
+          "title": "Learning Management System",
+          "category": "Education",
+          "description": "Sistema de gestión educativa con cursos interactivos, seguimiento de progreso y certificados digitales.",
+          "icon": "mdi:school",
+          "technologies": [
+            "React",
+            "Python",
+            "AWS",
+            "MongoDB"
+          ],
+          "liveUrl": "https://lms.educatech.com",
+          "caseStudyUrl": "https://case-study.lms.com",
+          "collaborators": 6,
+          "developmentTime": "6 meses",
+          "showTechCard": true,
+          "showProductionLink": true
+        },
+        {
+          "id": "12",
+          "title": "Healthcare Platform",
+          "category": "Health",
+          "description": "Plataforma médica para citas online, historial clínico y telemedicina con videoconferencias integradas.",
+          "icon": "mdi:medical-bag",
+          "technologies": [
+            "Next.js",
+            "TypeScript",
+            "WebRTC",
+            "MySQL"
+          ],
+          "liveUrl": "https://health.healthplus.com",
+          "caseStudyUrl": "https://case-study.health.com",
+          "collaborators": 7,
+          "developmentTime": "7 meses",
+          "showTechCard": true,
+          "showProductionLink": true
+        }
+      ]
+    },
+    {
+      "cards": [
+        {
+          "id": "13",
+          "title": "E-Commerce Pro",
+          "category": "Retail",
+          "description": "Plataforma e-commerce enterprise con inventario multi-almacén y analytics avanzados.",
+          "icon": "mdi:store",
+          "technologies": [
+            "Next.js",
+            "Node.js",
+            "PostgreSQL",
+            "Redis"
+          ],
+          "liveUrl": "https://ecommerce.retailmax.com",
+          "caseStudyUrl": "https://case-study.ecommerce.com",
+          "collaborators": 10,
+          "developmentTime": "10 meses",
+          "showTechCard": true,
+          "showProductionLink": true
+        },
+        {
+          "id": "14",
+          "title": "Analytics Dashboard",
+          "category": "Data",
+          "description": "Dashboard de business intelligence con KPIs en tiempo real y reportes personalizados.",
+          "icon": "mdi:chart-box",
+          "technologies": [
+            "React",
+            "Python",
+            "D3.js",
+            "PostgreSQL"
+          ],
+          "liveUrl": "https://analytics.datacorp.com",
+          "caseStudyUrl": "https://case-study.analytics.com",
+          "collaborators": 5,
+          "developmentTime": "5 meses",
+          "showTechCard": true,
+          "showProductionLink": true
+        },
+        {
+          "id": "15",
+          "title": "CRM Enterprise",
+          "category": "Business",
+          "description": "Sistema CRM completo con automatización de ventas y gestión de relaciones con clientes.",
+          "icon": "mdi:account-group",
+          "technologies": [
+            "Vue.js",
+            "Laravel",
+            "MySQL",
+            "Elasticsearch"
+          ],
+          "liveUrl": "https://crm.salespro.com",
+          "caseStudyUrl": "https://case-study.crm.com",
+          "collaborators": 9,
+          "developmentTime": "9 meses",
+          "showTechCard": true,
+          "showProductionLink": true
+        }
+      ]
+    }
+  ],
+  "en-desarrollo": [
+    {
+      "cards": [
+        {
+          "id": "16",
+          "title": "AI Content Generator",
+          "category": "AI/ML",
+          "description": "Plataforma de generación de contenido asistida por IA con plantillas personalizables y optimización SEO.",
+          "icon": "mdi:robot",
+          "technologies": [
+            "Vue.js",
+            "Python",
+            "OpenAI",
+            "TailwindCSS"
+          ],
+          "githubUrl": "https://github.com/usuario/ai-content-generator",
+          "collaborators": 4,
+          "developmentTime": "4 meses",
+          "showTechCard": true,
+          "showProductionLink": false
+        },
+        {
+          "id": "17",
+          "title": "Real Estate CRM",
+          "category": "Real Estate",
+          "description": "Sistema CRM especializado para agentes inmobiliarios con gestión de propiedades y clientes integrada.",
+          "icon": "mdi:home-city",
+          "technologies": [
+            "React",
+            "Node.js",
+            "PostgreSQL",
+            "Mapbox"
+          ],
+          "githubUrl": "https://github.com/usuario/realestate-crm",
+          "collaborators": 3,
+          "developmentTime": "3 meses",
+          "showTechCard": true,
+          "showProductionLink": false
+        },
+        {
+          "id": "18",
+          "title": "Fitness Tracker App",
+          "category": "Mobile",
+          "description": "Aplicación móvil para seguimiento de entrenamientos con gamificación y comunidad integrada.",
+          "icon": "mdi:run-fast",
+          "technologies": [
+            "React Native",
+            "Firebase",
+            "Redux",
+            "Charts.js"
+          ],
+          "githubUrl": "https://github.com/usuario/fitness-tracker",
+          "collaborators": 2,
+          "developmentTime": "2 meses",
+          "showTechCard": true,
+          "showProductionLink": false
+        }
+      ]
+    },
+    {
+      "cards": [
+        {
+          "id": "19",
+          "title": "Blockchain Wallet",
+          "category": "Blockchain",
+          "description": "Wallet digital multi-cadena con soporte para DeFi, NFTs y trading integrado.",
+          "icon": "mdi:wallet",
+          "technologies": [
+            "Web3.js",
+            "Solidity",
+            "React",
+            "IPFS"
+          ],
+          "githubUrl": "https://github.com/usuario/blockchain-wallet",
+          "collaborators": 3,
+          "developmentTime": "3 meses",
+          "showTechCard": true,
+          "showProductionLink": false
+        },
+        {
+          "id": "20",
+          "title": "Video Streaming Platform",
+          "category": "Streaming",
+          "description": "Plataforma de streaming con live coding, chat interactivo y sistema de suscripciones.",
+          "icon": "mdi:video",
+          "technologies": [
+            "WebRTC",
+            "Node.js",
+            "Socket.io",
+            "AWS"
+          ],
+          "githubUrl": "https://github.com/usuario/video-streaming",
+          "collaborators": 4,
+          "developmentTime": "4 meses",
+          "showTechCard": true,
+          "showProductionLink": false
+        },
+        {
+          "id": "21",
+          "title": "Smart Home Dashboard",
+          "category": "IoT",
+          "description": "Dashboard IoT para control de dispositivos domésticos con automatización y voice control.",
+          "icon": "mdi:home-automation",
+          "technologies": [
+            "Vue.js",
+            "MQTT",
+            "Node-RED",
+            "Raspberry Pi"
+          ],
+          "githubUrl": "https://github.com/usuario/smart-home",
+          "collaborators": 2,
+          "developmentTime": "2 meses",
+          "showTechCard": true,
+          "showProductionLink": false
+        }
+      ]
+    }
+  ],
+  "personales": [
+    {
+      "cards": [
+        {
+          "id": "22",
+          "title": "Portfolio 3D",
+          "category": "Creative",
+          "description": "Portfolio interactivo con animaciones 3D y efectos visuales avanzados usando Three.js.",
+          "icon": "mdi:cube-outline",
+          "technologies": [
+            "Vue.js",
+            "Three.js",
+            "GSAP",
+            "WebGL"
+          ],
+          "liveUrl": "https://portfolio-3d.example.com",
+          "githubUrl": "https://github.com/username/portfolio-3d",
+          "collaborators": 1,
+          "developmentTime": "1 mes",
+          "showTechCard": true,
+          "showProductionLink": true
+        },
+        {
+          "id": "23",
+          "title": "Task Automation CLI",
+          "category": "Utility",
+          "description": "Herramienta de línea de comandos para automatizar tareas repetitivas en desarrollo.",
+          "icon": "mdi:terminal",
+          "technologies": [
+            "Node.js",
+            "TypeScript",
+            "Commander.js",
+            "Chalk"
+          ],
+          "liveUrl": "https://npmjs.com/package/task-automation-cli",
+          "githubUrl": "https://github.com/username/task-automation-cli",
+          "collaborators": 1,
+          "developmentTime": "2 semanas",
+          "showTechCard": true,
+          "showProductionLink": true
+        },
+        {
+          "id": "24",
+          "title": "Music Player Web",
+          "category": "Entertainment",
+          "description": "Reproductor de música web con playlist, visualización de audio y sincronización en la nube.",
+          "icon": "mdi:music",
+          "technologies": [
+            "React",
+            "Web Audio API",
+            "Firebase",
+            "TailwindCSS"
+          ],
+          "liveUrl": "https://music-player.example.com",
+          "githubUrl": "https://github.com/username/music-player",
+          "collaborators": 1,
+          "developmentTime": "3 semanas",
+          "showTechCard": true,
+          "showProductionLink": true
+        }
+      ]
+    },
+    {
+      "cards": [
+        {
+          "id": "25",
+          "title": "Weather Dashboard",
+          "category": "Utility",
+          "description": "Dashboard meteorológico con pronóstico extendido, mapas interactivos y alertas personalizadas.",
+          "icon": "mdi:weather-cloudy",
+          "technologies": [
+            "Vue.js",
+            "OpenWeather API",
+            "Chart.js",
+            "Mapbox"
+          ],
+          "liveUrl": "https://weather-dashboard.example.com",
+          "githubUrl": "https://github.com/username/weather-dashboard",
+          "collaborators": 1,
+          "developmentTime": "2 semanas",
+          "showTechCard": true,
+          "showProductionLink": true
+        },
+        {
+          "id": "26",
+          "title": "Blog Platform",
+          "category": "Content",
+          "description": "Plataforma de blogging con markdown, sintaxis highlighting y sistema de comentarios.",
+          "icon": "mdi:book-open-page-variant",
+          "technologies": [
+            "Next.js",
+            "MDX",
+            "Prisma",
+            "PostgreSQL"
+          ],
+          "liveUrl": "https://blog-platform.example.com",
+          "githubUrl": "https://github.com/username/blog-platform",
+          "collaborators": 1,
+          "developmentTime": "3 semanas",
+          "showTechCard": true,
+          "showProductionLink": true
+        },
+        {
+          "id": "27",
+          "title": "Game Collection",
+          "category": "Entertainment",
+          "description": "Colección de mini-juegos browser con leaderboard, logros y sistema de puntuación.",
+          "icon": "mdi:gamepad-variant",
+          "technologies": [
+            "Canvas API",
+            "JavaScript",
+            "WebSockets",
+            "Redis"
+          ],
+          "liveUrl": "https://games.example.com",
+          "githubUrl": "https://github.com/username/game-collection",
+          "collaborators": 1,
+          "developmentTime": "1 mes",
+          "showTechCard": true,
+          "showProductionLink": true
+        }
+      ]
+    }
+  ]
+}

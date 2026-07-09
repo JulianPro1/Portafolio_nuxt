@@ -91,6 +91,7 @@
         </div>
         <div class="whitespace-pre-line text-gray-300 text-[10px] leading-relaxed">
           {{ displayedContent }}<span v-if="isTyping" class="animate-pulse text-about-fuchsia font-bold">█</span>
+          <br><br>
         </div>
       </div>
     </div>
@@ -107,7 +108,6 @@ interface AgentFile {
 
 const props = defineProps<{
   modelValue: string
-  files: Record<string, AgentFile>
   isActive?: boolean
 }>()
 
@@ -117,6 +117,11 @@ defineEmits<{
 
 const skillsOpen = ref(true)
 const subAgentsOpen = ref(true)
+
+const { data: aboutAgentFiles } = await useAsyncData('about-agent-files-component', () => 
+  queryCollection('agentFiles').first()
+)
+const files = computed(() => (aboutAgentFiles.value?.files || {}) as Record<string, AgentFile>)
 
 const displayedContent = ref('')
 const isTyping = ref(false)
@@ -145,14 +150,14 @@ const startTyping = (text: string) => {
 // Arrancar escritura cuando el archivo cambia (solo si está activo)
 watch(() => props.modelValue, (newVal) => {
   if (!props.isActive) return
-  const content = props.files[newVal]?.content || ''
+  const content = files.value[newVal]?.content || ''
   startTyping(content)
 })
 
 // Arrancar/detener según el foco de la sección
 watch(() => props.isActive, (active) => {
   if (active) {
-    const content = props.files[props.modelValue]?.content || ''
+    const content = files.value[props.modelValue]?.content || ''
     startTyping(content)
   } else {
     if (typingInterval) clearInterval(typingInterval)

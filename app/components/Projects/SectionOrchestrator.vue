@@ -132,8 +132,10 @@ import ProjectsListScroll from "~/components/Projects/ProjectsListScroll.vue";
 import ProjectsDropdown from "~/components/Projects/ProjectsDropdown.vue";
 import ProjectsFloatingBubble from "~/components/Projects/ProjectsFloatingBubble.vue";
 import AnimatedElement from "~/components/Common/AnimatedElement.vue";
-import { getProjectsData } from "~/data/projectsData";
 import { useLenis } from "~/composables/useLenis";
+import type { ProjectSlide } from "~/types/projects";
+
+const { data: projectsDoc } = await useAsyncData('projects', () => queryCollection('projectsList').first())
 
 const lenis = useLenis();
 
@@ -173,8 +175,8 @@ let ctx: gsap.Context | null = null;
 
 // Obtener proyectos aplanados de una categoría
 const getProjectsForCategory = (categoryId: string) => {
-  const slides = getProjectsData(categoryId);
-  return slides.flatMap(slide => slide.cards);
+  const slides = ((projectsDoc.value as any)?.[categoryId] || []) as ProjectSlide[];
+  return slides.flatMap((slide) => slide.cards);
 };
 
 const updateActiveIndicator = (id: string, immediate = false) => {

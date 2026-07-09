@@ -202,7 +202,8 @@
             <div
               class="bg-gradient-to-br from-global-base to-global-bg rounded-2xl p-8 border border-global-base"
             >
-              <p class="text-global-text-muted leading-relaxed mb-6">
+              <ContentRenderer v-if="project.body" :value="project" class="text-global-text-muted leading-relaxed mb-6 markdown-body" />
+              <p v-else class="text-global-text-muted leading-relaxed mb-6">
                 {{ project.description }}
               </p>
 
@@ -364,81 +365,48 @@ const selectedImageIndex = ref(0);
 const route = useRoute();
 const projectId = route.params.id_project;
 
-// Datos del proyecto (ejemplo - en producción vendría de una API)
-const project = ref({
-  id: projectId,
-  title: "Banking Portal Moderno",
-  category: "FinTech",
-  status: "production",
-  client: "FinTech Corp",
-  date: "Enero 2024",
-  duration: "4 meses",
-  type: "Web Application",
-  shortDescription:
-    "Portal bancario seguro con transferencias, gestión de cuentas y dashboard financiero en tiempo real.",
-  description:
-    "Desarrollo completo de un portal bancario moderno que ofrece una experiencia de usuario excepcional para la gestión financiera. El proyecto incluye autenticación segura, transferencias en tiempo real, gestión de cuentas múltiples, dashboard analítico con gráficos interactivos, notificaciones push, y soporte para múltiples dispositivos. Se implementaron las mejores prácticas de seguridad y se optimizó el rendimiento para manejar miles de usuarios concurrentes.",
-  objectives: [
-    "Crear una experiencia bancaria digital moderna e intuitiva",
-    "Implementar seguridad de nivel empresarial para todas las transacciones",
-    "Desarrollar un dashboard analítico con visualización de datos en tiempo real",
-    "Garantizar compatibilidad con dispositivos móviles y escritorio",
-    "Optimizar el rendimiento para alta concurrencia de usuarios",
-  ],
-  features: [
-    "Autenticación biométrica y doble factor",
-    "Transferencias instantáneas entre cuentas",
-    "Dashboard con gráficos interactivos",
-    "Notificaciones push y email",
-    "Gestión de presupuestos y metas",
-    "Exportación de informes en PDF",
-    "Soporte 24/7 integrado",
-    "API RESTful completa",
-  ],
-  technologies: [
-    "Vue.js",
-    "Node.js",
-    "PostgreSQL",
-    "Docker",
-    "Redis",
-    "AWS",
-    "Stripe API",
-    "Socket.io",
-  ],
-  liveUrl: "https://banking-fintech.com",
-  githubUrl: "https://github.com/username/banking-portal",
-  gallery: [
-    {
-      url: "https://picsum.photos/seed/banking1/400/300.jpg",
-      alt: "Dashboard principal",
-      title: "Dashboard Principal",
-      description: "Vista general del dashboard con métricas financieras",
-    },
-    {
-      url: "https://picsum.photos/seed/banking2/400/300.jpg",
-      alt: "Transferencias",
-      title: "Transferencias",
-      description: "Interfaz para realizar transferencias entre cuentas",
-    },
-    {
-      url: "https://picsum.photos/seed/banking3/400/300.jpg",
-      alt: "Gestión de cuentas",
-      title: "Gestión de Cuentas",
-      description: "Panel de administración de cuentas bancarias",
-    },
-    {
-      url: "https://picsum.photos/seed/banking4/400/300.jpg",
-      alt: "Móvil",
-      title: "Versión Móvil",
-      description: "Interfaz optimizada para dispositivos móviles",
-    },
-    {
-      url: "https://picsum.photos/seed/banking5/400/300.jpg",
-      alt: "Análisis",
-      title: "Análisis Financiero",
-      description: "Gráficos y reportes de análisis financiero",
-    },
-  ],
+// Obtener datos del proyecto con Nuxt Content
+const { data: projectDoc } = await useAsyncData(`project-${projectId}`, () => 
+  queryCollection('projects').where('id', '=', projectId).first()
+)
+
+const project = computed(() => {
+  const p = projectDoc.value || {};
+  return {
+    id: projectId,
+    title: p.title || "Proyecto",
+    category: p.category || "Desarrollo",
+    status: p.status || "production",
+    client: p.client || "Cliente Privado",
+    date: p.date || "2024",
+    duration: p.developmentTime || p.duration || "Variable",
+    type: p.type || "Sitio Web",
+    shortDescription: p.shortDescription || p.description || "",
+    description: p.description || "",
+    objectives: p.objectives || [
+      "Optimizar la experiencia de usuario y accesibilidad.",
+      "Garantizar la escalabilidad del sistema.",
+      "Implementar tecnologías modernas y seguras."
+    ],
+    features: p.features || [
+      "Diseño responsivo y adaptativo",
+      "Optimización de velocidad de carga",
+      "Lógica de negocio robusta"
+    ],
+    technologies: p.technologies || [],
+    liveUrl: p.liveUrl || "",
+    githubUrl: p.githubUrl || "",
+    gallery: p.gallery || [
+      {
+        url: "https://picsum.photos/seed/project/400/300.jpg",
+        alt: p.title || "Captura de pantalla",
+        title: p.title || "Vista Principal",
+        description: "Captura de pantalla del proyecto"
+      }
+    ],
+    _path: p._path,
+    body: p.body
+  };
 });
 
 // Métodos

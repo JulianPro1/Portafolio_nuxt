@@ -6,22 +6,20 @@
     <div class="relative z-10 mb-3 sm:mb-5 flex items-center justify-between gap-3">
       <div class="inline-flex items-center gap-2 rounded-full border border-skills-accent bg-skills-accent/10 px-2.5 py-0.5 sm:px-3 sm:py-1 text-[0.6rem] sm:text-[0.65rem] font-bold uppercase tracking-[0.22em] text-skills-accent-light">
         <span class="h-1.5 w-1.5 rounded-full bg-skills-accent-light shadow-[0_0_12px_hsla(0,84%,50%,0.9)]"></span>
-        Stack técnico
+        {{ item.badge }}
       </div>
     </div>
 
     <div class="relative z-10 flex flex-1 flex-col justify-between">
       <div>
         <h3 class="mb-2 sm:mb-3 text-xl sm:text-2xl font-black leading-tight text-global-text">
-          Mis
+          {{ item.titlePrefix }}
           <span class="block bg-gradient-to-r from-skills-accent to-skills-accent-light bg-clip-text text-transparent">
-            Habilidades
+            {{ item.titleHighlight }}
           </span>
         </h3>
 
-        <p class="text-xs sm:text-sm leading-relaxed text-global-text-muted">
-          Tecnologías y herramientas que domino para crear experiencias web modernas, performantes y escalables.
-        </p>
+        <p class="text-xs sm:text-sm leading-relaxed text-global-text-muted" v-html="item.cardDescription"></p>
       </div>
 
       <div class="mt-3 sm:mt-5 space-y-3 sm:space-y-4">
@@ -37,11 +35,11 @@
         </div>
 
         <PreviewCardButton
-          to="/skills"
+          :to="item.href"
           variant="skills"
           full-width
         >
-          Ver stack
+          {{ item.buttonText }}
         </PreviewCardButton>
       </div>
     </div>
@@ -49,6 +47,13 @@
 </template>
 
 <script setup lang="ts">
-import { skillCategoriesData } from '~/data/skillsPreviewData';
+import { computed } from 'vue';
+import type { PortfolioItemCard } from '~/types';
 import PreviewCardButton from '@/components/Index/PreviewCardButton.vue';
+
+const props = defineProps<{
+  item: PortfolioItemCard
+}>();
+
+const skillCategoriesData = computed(() => props.item.details || []);
 </script>
