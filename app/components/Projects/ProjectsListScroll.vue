@@ -6,10 +6,10 @@
       class="project-bento-wrapper opacity-0 translate-y-12"
       :data-project-id="project.id"
     >
-      <!-- Bento Grid de un Proyecto -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 h-auto md:h-[450px]">
+      <!-- Layout Desktop: Bento Grid 4 columnas -->
+      <div class="hidden md:grid md:grid-cols-4 gap-6 md:h-[450px]">
         <!-- Card principal (grande) -->
-        <div class="col-span-1 md:col-span-2 md:row-span-2 h-full">
+        <div class="md:col-span-2 md:row-span-2 h-full">
           <ProjectCard
             :project="project"
             variant="large"
@@ -19,21 +19,52 @@
           />
         </div>
 
-        <!-- Cards secundarias (pequeñas) -->
+        <!-- Cards secundarias desktop -->
         <div class="col-span-1 h-full" v-if="project.collaborators">
           <CollaboratorsCard :count="project.collaborators" />
         </div>
-
         <div class="col-span-1 h-full" v-if="project.developmentTime">
           <DevelopmentTimeCard :time="project.developmentTime" />
         </div>
-
         <div class="col-span-1 h-full" v-if="project.showTechCard">
           <TechnologiesCard :technologies="project.technologies || []" />
         </div>
-
         <div class="col-span-1 h-full" v-if="project.showProductionLink && project.liveUrl">
           <ProductionLinkCard :url="project.liveUrl" />
+        </div>
+      </div>
+
+      <!-- Layout Mobile: Card principal + grid 2x2 de cards pequeñas -->
+      <div class="flex flex-col gap-4 md:hidden">
+        <!-- Card principal con altura reducida en mobile -->
+        <div class="h-[320px]">
+          <ProjectCard
+            :project="project"
+            variant="large"
+            :badge-config="config.badge"
+            :color-scheme="config.colors"
+            :links-config="config.links"
+          />
+        </div>
+
+        <!-- Grid 2x2 compacto para cards secundarias -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="h-[120px]" v-if="project.collaborators">
+            <CollaboratorsCard :count="project.collaborators" />
+          </div>
+          <div class="h-[120px]" v-if="project.developmentTime">
+            <DevelopmentTimeCard :time="project.developmentTime" />
+          </div>
+          <div
+            class="h-[120px]"
+            :class="{ 'col-span-2': !project.showProductionLink || !project.liveUrl }"
+            v-if="project.showTechCard"
+          >
+            <TechnologiesCard :technologies="project.technologies || []" />
+          </div>
+          <div class="h-[120px]" v-if="project.showProductionLink && project.liveUrl">
+            <ProductionLinkCard :url="project.liveUrl" />
+          </div>
         </div>
       </div>
     </div>
