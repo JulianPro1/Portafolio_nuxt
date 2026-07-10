@@ -53,3 +53,11 @@
   --skills-accent-dark: hsl(180, 80%, 30%);
 }
 
+/* Fondo base siempre oscuro — previene destello blanco antes/durante carga */
+html,
+body {
+  background-color: var(--global-bg);
+  color: var(--global-text);
+  margin: 0;
+  padding: 0;
+}

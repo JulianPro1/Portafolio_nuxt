@@ -8,7 +8,8 @@ technologies:
   - 'TypeScript'
   - 'Bootstrap 5'
   - 'Sass'
-  - 'HTML5/CSS3'
+  - 'HTML5'
+  - 'CSS3'
 liveUrl: 'https://app.farmaciassanignacio.com'
 caseStudyUrl: null
 collaborators: 2

@@ -6,7 +6,6 @@ icon: '/img/project-chami/logo-chami.png'
 technologies:
   - 'Vue.js'
   - 'TypeScript'
-  - 'Leaflet.js'
   - 'Bootstrap'
 liveUrl: 'https://rides.chami.demo.com'
 caseStudyUrl: null

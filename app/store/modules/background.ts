@@ -8,6 +8,8 @@ interface RouteThemeConfig {
   navbarBorderColor: string
   navbarAccentColor: string
   navbarHighlightColor: string
+  /** Colores del degradado de la barra de progreso de scroll (mínimo 2) */
+  navbarProgressColors?: string[]
 }
 
 const DEFAULT_CONFIG = {
@@ -19,6 +21,7 @@ const DEFAULT_CONFIG = {
   navbarAccentColor: 'hsl(272, 63%, 46%)',
   navbarHighlightColor: 'hsl(225, 75%, 48%)',
   navbarAccentColorHslComponents: '272, 63%, 46%',
+  navbarProgressColors: ['hsl(272, 63%, 46%)', 'hsl(225, 75%, 48%)', 'hsl(195, 80%, 55%)'] as string[],
 } as const
 
 export const useBackgroundStore = defineStore('background', {
@@ -31,6 +34,8 @@ export const useBackgroundStore = defineStore('background', {
     navbarAccentColor: DEFAULT_CONFIG.navbarAccentColor as string,
     navbarHighlightColor: DEFAULT_CONFIG.navbarHighlightColor as string,
     navbarAccentColorHslComponents: DEFAULT_CONFIG.navbarAccentColorHslComponents as string,
+    /** Colores del degradado de la barra de progreso de scroll */
+    navbarProgressColors: [...DEFAULT_CONFIG.navbarProgressColors] as string[],
     domainAccentColors: {
       about: 'hsl(270, 67%, 45%)',
       contact: 'hsl(145, 65%, 42%)',
@@ -45,36 +50,42 @@ export const useBackgroundStore = defineStore('background', {
         navbarBorderColor: 'hsl(271, 100%, 14%)',
         navbarAccentColor: 'hsl(272, 63%, 46%)',
         navbarHighlightColor: 'hsl(330, 90%, 55%)',
+        navbarProgressColors: ['hsl(272, 63%, 46%)', 'hsl(310, 80%, 55%)', 'hsl(330, 90%, 55%)'],
       },
       '/about': {
         backgroundColor: 'hsl(0, 0%, 4%)',
         navbarBorderColor: 'hsl(271, 100%, 14%)',
         navbarAccentColor: 'hsl(272, 63%, 46%)',
         navbarHighlightColor: 'hsl(330, 90%, 55%)',
+        navbarProgressColors: ['hsl(272, 63%, 46%)', 'hsl(310, 80%, 55%)', 'hsl(330, 90%, 55%)'],
       },
       '/projects': {
         backgroundColor: 'hsl(0, 0%, 4%)',
         navbarBorderColor: 'hsl(225, 80%, 35%)',
         navbarAccentColor: 'hsl(225, 75%, 48%)',
         navbarHighlightColor: 'hsl(189, 95%, 43%)',
+        navbarProgressColors: ['hsl(225, 75%, 48%)', 'hsl(207, 85%, 55%)', 'hsl(189, 95%, 43%)', 'hsl(135, 70%, 42%)'],
       },
       '/skills': {
         backgroundColor: 'hsl(0, 0%, 4%)',
         navbarBorderColor: 'hsl(180, 100%, 15%)',
         navbarAccentColor: 'hsl(189, 95%, 43%)',
         navbarHighlightColor: 'hsl(161, 94%, 30%)',
+        navbarProgressColors: ['hsl(189, 95%, 43%)', 'hsl(175, 90%, 38%)', 'hsl(161, 94%, 30%)'],
       },
       '/contact': {
         backgroundColor: 'hsl(0, 0%, 4%)',
         navbarBorderColor: 'hsl(163, 94%, 24%)',
         navbarAccentColor: 'hsl(161, 94%, 30%)',
         navbarHighlightColor: 'hsl(115, 70%, 45%)',
+        navbarProgressColors: ['hsl(161, 94%, 30%)', 'hsl(138, 80%, 40%)', 'hsl(115, 70%, 45%)'],
       },
       '/project-detail/:id': {
         backgroundColor: 'hsl(0, 0%, 4%)',
         navbarBorderColor: 'hsl(225, 80%, 35%)',
         navbarAccentColor: 'hsl(225, 75%, 48%)',
         navbarHighlightColor: 'hsl(189, 95%, 43%)',
+        navbarProgressColors: ['hsl(225, 75%, 48%)', 'hsl(207, 85%, 55%)', 'hsl(189, 95%, 43%)'],
       },
     } as Record<string, RouteThemeConfig>,
   }),
@@ -98,11 +109,14 @@ export const useBackgroundStore = defineStore('background', {
       this.wavesGradient = gradient
     },
 
-    setNavbarColors(borderColor: string, accentColor: string, highlightColor: string) {
+    setNavbarColors(borderColor: string, accentColor: string, highlightColor: string, progressColors?: string[]) {
       this.navbarBorderColor = borderColor
       this.navbarAccentColor = accentColor
       this.navbarHighlightColor = highlightColor
       this.navbarAccentColorHslComponents = this.extractHslComponents(accentColor)
+      if (progressColors && progressColors.length >= 2) {
+        this.navbarProgressColors = progressColors
+      }
     },
 
     extractHslComponents(color: string): string {
@@ -144,6 +158,7 @@ export const useBackgroundStore = defineStore('background', {
       this.navbarAccentColor = DEFAULT_CONFIG.navbarAccentColor
       this.navbarHighlightColor = DEFAULT_CONFIG.navbarHighlightColor
       this.navbarAccentColorHslComponents = DEFAULT_CONFIG.navbarAccentColorHslComponents
+      this.navbarProgressColors = [...DEFAULT_CONFIG.navbarProgressColors]
     },
 
     applyThemeForRoute(routePath: string) {
@@ -168,7 +183,7 @@ export const useBackgroundStore = defineStore('background', {
         if (theme.showWaves !== undefined) {
           this.setWaves(theme.showWaves, theme.wavesGradient || 'about-gradient-subtle')
         }
-        this.setNavbarColors(theme.navbarBorderColor, theme.navbarAccentColor, theme.navbarHighlightColor)
+        this.setNavbarColors(theme.navbarBorderColor, theme.navbarAccentColor, theme.navbarHighlightColor, theme.navbarProgressColors)
       } else {
         this.resetBackground()
       }

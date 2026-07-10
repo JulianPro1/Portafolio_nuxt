@@ -9,9 +9,9 @@
       style="transform-origin: left; transition: opacity 0.3s ease, box-shadow 0.3s ease; will-change: transform;"
       :style="{
         transform: `scaleX(${scrollProgress / 100})`,
-        background: `linear-gradient(to right, ${backgroundStore.navbarAccentColor}, ${backgroundStore.navbarHighlightColor}, ${scrollSecondaryColor})`,
+        background: `linear-gradient(to right, ${backgroundStore.navbarProgressColors.join(', ')})`,
         opacity: scrollProgress > 2 ? 1 : 0,
-        boxShadow: `0 0 8px ${backgroundStore.navbarAccentColor}80`
+        boxShadow: `0 0 8px ${backgroundStore.navbarProgressColors[0]}80`
       }"
     />
 
@@ -103,19 +103,6 @@ const scrollProgress = computed(() => {
   return Math.min(100, (scrollY.value / docHeight) * 100);
 });
 
-/** Color análogo secundario para el gradiente de la línea de progreso */
-const scrollSecondaryColor = computed(() => {
-  // Desplaza la línea de color 30° más en el espectro análogo
-  const accent = backgroundStore.navbarHighlightColor;
-  // Extraer hue del highlight y añadir 30 grados análogos
-  const m = /hsl\(\s*(\d+)/i.exec(accent);
-  if (m) {
-    const h = ((parseInt(m[1]) - 30) + 360) % 360;
-    return `hsl(${h}, 80%, 55%)`;
-  }
-  return accent;
-});
-
 /** Estilo dinámico de la navbar basado en el scroll */
 const navbarDynamicStyle = computed(() => {
   const progress = Math.min(1, scrollY.value / 80); // satura en 80px
@@ -129,7 +116,7 @@ const navbarDynamicStyle = computed(() => {
   // Gradientes análogos para el logo (colores cálidos/fríos según ruta)
   const gradStart = backgroundStore.navbarAccentColor;
   const gradMid = backgroundStore.navbarHighlightColor;
-  const gradEnd = scrollSecondaryColor.value;
+  const gradEnd = backgroundStore.navbarHighlightColor;
 
   return {
     backgroundColor: `hsla(0, 0%, 4%, ${bgAlpha})`,

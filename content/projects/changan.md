@@ -8,7 +8,8 @@ technologies:
   - 'TypeScript'
   - 'Bootstrap 5'
   - 'Sass'
-  - 'HTML5/CSS3'
+  - 'HTML'
+  - 'CSS3'
 liveUrl: 'https://app.changan.com.ve'
 caseStudyUrl: null
 collaborators: 1
