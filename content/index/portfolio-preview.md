@@ -31,13 +31,13 @@ items:
     buttonText: Ver proyectos
     details:
       - label: Proyectos
-        value: 20+
+        value: 10+
         icon: mdi:folder-multiple
       - label: En vivo
-        value: '12'
+        value: '10'
         icon: mdi:rocket-launch
       - label: Tecnologías
-        value: 15+
+        value: 6+
         icon: mdi:code-tags
   - id: skills
     href: /skills

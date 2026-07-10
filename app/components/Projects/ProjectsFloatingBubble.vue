@@ -109,9 +109,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { gsap } from 'gsap'
-import type { ProjectSlide } from '~/types/projects'
 
-const { data: projectsDoc } = await useAsyncData('projects', () => queryCollection('projectsList').first())
+const { data: projectsData } = await useAsyncData('projects', () => queryCollection('projects').all())
 
 const props = defineProps<{
   activeTab?: string
@@ -159,10 +158,9 @@ const bubbleStyle = computed(() => ({
 
 const categoriesWithProjects = computed(() =>
   tabs.map(tab => {
-    const slides = ((projectsDoc.value as any)?.[tab.id] || []) as ProjectSlide[];
     return {
       ...tab,
-      projects: slides.flatMap((slide) => slide.cards),
+      projects: (projectsData.value || []).filter(p => p.categories?.includes(tab.id)),
     };
   }).filter(cat => cat.projects.length > 0)
 )

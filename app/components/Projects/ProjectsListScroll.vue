@@ -29,7 +29,7 @@
         </div>
 
         <div class="col-span-1 h-full" v-if="project.showTechCard">
-          <TechnologiesCard :technologies="project.technologies" />
+          <TechnologiesCard :technologies="project.technologies || []" />
         </div>
 
         <div class="col-span-1 h-full" v-if="project.showProductionLink && project.liveUrl">
@@ -50,20 +50,18 @@ import DevelopmentTimeCard from '~/components/Projects/cards/DevelopmentTimeCard
 import TechnologiesCard from '~/components/Projects/cards/TechnologiesCard.vue'
 import ProductionLinkCard from '~/components/Projects/cards/ProductionLinkCard.vue'
 import { getCategoryConfig } from '~/constants/projectCategories'
-import type { ProjectSlide } from '~/types/projects'
 
 const props = defineProps<{
   category: string
 }>()
 
-const { data: projectsDoc } = await useAsyncData('projects', () => queryCollection('projectsList').first())
+const { data: projectsData } = await useAsyncData('projects', () => queryCollection('projects').all())
 
 const config = getCategoryConfig(props.category)
-const rawProjects = computed(() => ((projectsDoc.value as any)?.[props.category] || []) as ProjectSlide[])
 
-// Aplanar todos los proyectos de las diapositivas
 const allProjects = computed(() => {
-  return rawProjects.value.flatMap(slide => slide.cards)
+  if (!projectsData.value) return [];
+  return projectsData.value.filter(p => p.categories?.includes(props.category));
 })
 
 let ctx: gsap.Context | null = null

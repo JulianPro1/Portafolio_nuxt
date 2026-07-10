@@ -4,78 +4,22 @@ export default defineContentConfig({
   collections: {
     projects: defineCollection({
       type: 'page',
-      source: 'projects/*.md'
-    }),
-
-
-    projectsList: defineCollection({
-      type: 'data',
-      source: 'projects.json',
+      source: 'projects/*.md',
       schema: z.object({
-        destacados: z.array(z.object({
-          cards: z.array(z.object({
-            id: z.string(),
-            title: z.string(),
-            category: z.string(),
-            description: z.string(),
-            icon: z.string(),
-            technologies: z.array(z.string()),
-            liveUrl: z.string().optional(),
-            githubUrl: z.string().optional(),
-            collaborators: z.number().optional(),
-            developmentTime: z.string().optional(),
-            showTechCard: z.boolean().optional(),
-            showProductionLink: z.boolean().optional()
-          }))
-        })),
-        'en-produccion': z.array(z.object({
-          cards: z.array(z.object({
-            id: z.string(),
-            title: z.string(),
-            category: z.string(),
-            description: z.string(),
-            icon: z.string(),
-            technologies: z.array(z.string()),
-            liveUrl: z.string().optional(),
-            githubUrl: z.string().optional(),
-            collaborators: z.number().optional(),
-            developmentTime: z.string().optional(),
-            showTechCard: z.boolean().optional(),
-            showProductionLink: z.boolean().optional()
-          }))
-        })),
-        'en-desarrollo': z.array(z.object({
-          cards: z.array(z.object({
-            id: z.string(),
-            title: z.string(),
-            category: z.string(),
-            description: z.string(),
-            icon: z.string(),
-            technologies: z.array(z.string()),
-            liveUrl: z.string().optional(),
-            githubUrl: z.string().optional(),
-            collaborators: z.number().optional(),
-            developmentTime: z.string().optional(),
-            showTechCard: z.boolean().optional(),
-            showProductionLink: z.boolean().optional()
-          }))
-        })),
-        personales: z.array(z.object({
-          cards: z.array(z.object({
-            id: z.string(),
-            title: z.string(),
-            category: z.string(),
-            description: z.string(),
-            icon: z.string(),
-            technologies: z.array(z.string()),
-            liveUrl: z.string().optional(),
-            githubUrl: z.string().optional(),
-            collaborators: z.number().optional(),
-            developmentTime: z.string().optional(),
-            showTechCard: z.boolean().optional(),
-            showProductionLink: z.boolean().optional()
-          }))
-        }))
+        id: z.string(),
+        title: z.string(),
+        category: z.string(),
+        description: z.string().optional(),
+        icon: z.string().optional(),
+        technologies: z.array(z.string()).optional(),
+        liveUrl: z.string().optional(),
+        githubUrl: z.string().optional(),
+        caseStudyUrl: z.string().nullable().optional(),
+        collaborators: z.number().optional(),
+        developmentTime: z.string().optional(),
+        showTechCard: z.boolean().optional(),
+        showProductionLink: z.boolean().optional(),
+        categories: z.array(z.string()).optional()
       })
     }),
 
