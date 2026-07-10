@@ -156,6 +156,53 @@ export default defineContentConfig({
           content: z.string()
         })).optional()
       })
+    }),
+    contactIndex: defineCollection({
+      type: 'page',
+      source: 'contact/index.md',
+      schema: z.object({
+        badge: z.string(),
+        title: z.string(),
+        highlight: z.string(),
+        description: z.string(),
+        quickActions: z.array(z.object({
+          href: z.string(),
+          icon: z.string(),
+          title: z.string(),
+          description: z.string(),
+          external: z.boolean().optional()
+        })),
+        educationTitle: z.string(),
+        educationDescription: z.string(),
+        floatingTip: z.string()
+      })
+    }),
+    contactEducation: defineCollection({
+      type: 'data',
+      source: 'contact/education.json',
+      schema: z.object({
+        experiences: z.array(z.object({
+          id: z.number(),
+          title: z.string(),
+          institution: z.string(),
+          icon: z.string(),
+          description: z.string(),
+          period: z.string(),
+          location: z.string(),
+          url: z.string().optional(),
+          urlText: z.string().optional()
+        }))
+      })
+    }),
+    contactFaqs: defineCollection({
+      type: 'data',
+      source: 'contact/faqs.json',
+      schema: z.object({
+        faqs: z.array(z.object({
+          question: z.string(),
+          answer: z.string()
+        }))
+      })
     })
   }
 })

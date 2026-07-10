@@ -124,7 +124,7 @@
             <h3 class="text-base font-semibold text-white mb-3">
               Preguntas Frecuentes
             </h3>
-            <FaqCarousel />
+            <FaqCarousel :faqs="faqs" />
           </div>
         </div>
       </div>
@@ -140,6 +140,13 @@ import BaseInput from '~/components/Common/BaseInput.vue';
 import BaseTextarea from '~/components/Common/BaseTextarea.vue';
 import BaseToast from '~/components/Common/BaseToast.vue';
 import BaseGradientButton from '~/components/Common/BaseGradientButton.vue';
+
+import type { ContactFaq } from '~/types';
+
+defineProps<{
+  faqs: ContactFaq[];
+}>();
+
 
 const apiForm = "https://formspree.io/f/xyzrdzod";
 

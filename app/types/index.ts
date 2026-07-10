@@ -13,4 +13,5 @@ export interface Skill {
 }
 export * from './about';
 export * from './portfolio-preview';
+export * from './contact';
 

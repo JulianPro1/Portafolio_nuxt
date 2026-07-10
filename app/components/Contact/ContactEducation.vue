@@ -69,52 +69,13 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 // ScrollTrigger ya está registrado por gsap.client.ts (plugin global)
 
-const experiences = [
-  {
-    id: 1,
-    title: "T.S.U en Informática",
-    institution: "IUJO - Extensión Barquisimeto",
-    icon: "mdi:school",
-    description:
-      "Formación académica de excelencia en una institución de la Compañía de Jesús, donde desarrollé una base sólida en ingeniería de software, algoritmos y arquitectura de sistemas. Esta educación me proporcionó las herramientas técnicas y el pensamiento analítico necesario para abordar desafíos complejos en el desarrollo de soluciones digitales.",
-    period: "Formación Profesional",
-    location: "Barquisimeto, Venezuela",
-    url: "http://www.iujobarquisimeto.edu.ve",
-    urlText: "Ver sitio web",
-  },
-  {
-    id: 2,
-    title: "Experiencia como Dev. Frontend",
-    institution: "Ticktaps - Ticz",
-    icon: "mdi:code-tags",
-    description:
-      "Experiencia como desarrollador frontend en esta destacada firma de software venezolana, enfocada en el desarrollo de aplicaciones web a medida y plataformas interactivas (como portales deportivos, sistemas de gestión escolar y soluciones corporativas). Mi rol se centró en construir interfaces web dinámicas, responsivas y optimizadas, colaborando en la creación de paneles de control web para la interacción y automatización con sistemas de hardware.",
-    period: "Experiencia Profesional",
-    location: "Barquisimeto, Venezuela",
-    url: "https://ticktaps.com",
-    urlText: "Visitar sitio web",
-  },
-  {
-    id: 3,
-    title: "Ingeniería de Agentes de IA",
-    institution: "Formación Autodidacta",
-    icon: "mdi:robot",
-    description:
-      "Especialización autónoma en el diseño, desarrollo e implementación de agentes de IA para la generación de código y automatización de software. Enfoque en la estructuración de flujos agenticos bajo estándares de calidad específicos, ingeniería de prompts avanzada y optimización del desarrollo asistido por modelos de lenguaje.",
-    period: "Especialización Continua",
-    location: "Remoto / Autodidacta",
-  },
-  {
-    id: 4,
-    title: "Especialización para Full Stack (NestJS)",
-    institution: "Estudios Activos",
-    icon: "mdi:database",
-    description:
-      "Actualmente enfocado en potenciar mi perfil backend mediante el estudio profundo de NestJS. Aprendiendo a diseñar arquitecturas modulares, APIs escalables con TypeScript, inyección de dependencias, seguridad avanzada y buenas prácticas en el ecosistema backend moderno.",
-    period: "En Curso / Actualidad",
-    location: "Remoto / Autodidacta",
-  },
-];
+const props = defineProps({
+  experiences: {
+    type: Array,
+    required: true,
+    default: () => []
+  }
+});
 
 let ctx = null;
 

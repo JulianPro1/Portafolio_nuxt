@@ -108,17 +108,13 @@ import { ref, watch, nextTick, onMounted } from 'vue';
 import { gsap } from 'gsap';
 import BaseCarousel from '~/components/Common/BaseCarousel.vue';
 import BaseModal from '~/components/Common/BaseModal.vue';
-
-interface FAQ {
-  question: string;
-  answer: string;
-}
+import type { ContactFaq } from '~/types';
 
 const faqCarouselRef = ref<InstanceType<typeof BaseCarousel> | null>(null);
 const faqActiveIndex = ref(0);
 
 const isModalOpen = ref(false);
-const selectedFaq = ref<FAQ | null>(null);
+const selectedFaq = ref<ContactFaq | null>(null);
 
 // Animación de entrada coordinada de los elementos en el Slide activo
 const animateActiveSlide = () => {
@@ -227,7 +223,7 @@ const nextSlide = () => {
   animateArrow('right');
 };
 
-const openAnswer = (faq: FAQ) => {
+const openAnswer = (faq: ContactFaq) => {
   selectedFaq.value = faq;
   isModalOpen.value = true;
 };
@@ -284,36 +280,7 @@ watch(isModalOpen, (isOpen) => {
   }
 });
 
-const faqs: FAQ[] = [
-  {
-    question: "¿Cuál es tu tiempo de respuesta habitual?",
-    answer:
-      "Me comprometo a responder todos los mensajes en menos de 24 horas hábiles. Para consultas urgentes, suelen recibir respuesta el mismo día. Entiendo que tu tiempo es valioso y valoro cada oportunidad de colaboración.",
-  },
-  {
-    question: "¿Trabajas con proyectos de cualquier tamaño?",
-    answer:
-      "Sí, adapto mi metodología según el alcance del proyecto. Desde landing pages hasta aplicaciones web complejas. Cada proyecto recibe la misma dedicación y atención al detalle, independientemente de su tamaño.",
-  },
-  {
-    question: "¿Ofreces mantenimiento después del lanzamiento?",
-    answer:
-      "Absolutamente. Ofrezco paquetes de mantenimiento mensual que incluyen actualizaciones, seguridad, optimización de rendimiento y soporte técnico. Tu aplicación necesita evolucionar y yo estaré ahí para asegurar que siempre funcione perfectamente.",
-  },
-  {
-    question: "¿Cómo garantizas la calidad del código?",
-    answer:
-      "Utilizo testing automatizado (unit, integration y E2E), code reviews, seguimiento de estándares de industria y herramientas de análisis estático. Además, proporciono documentación clara y código auto-documentado para facilitar futuros mantenimientos.",
-  },
-  {
-    question: "¿Qué metodología de desarrollo utilizas?",
-    answer:
-      "Combino metodologías ágiles con entregas incrementales. Mantengo comunicación constante contigo para asegurar que el producto final cumpla exactamente con tus expectativas. Transparencia y colaboración son mis pilares.",
-  },
-  {
-    question: "¿Puedo ver ejemplos de trabajos similares?",
-    answer:
-      "Claro que sí. En mi portafolio encontrarás proyectos reales con código abierto en GitHub. Además, durante nuestra llamada inicial puedo mostrarte casos de estudio específicos relacionados con tu industria o tipo de proyecto.",
-  },
-];
+const props = defineProps<{
+  faqs: ContactFaq[];
+}>();
 </script>

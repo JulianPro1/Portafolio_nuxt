@@ -5,10 +5,10 @@
       <div class="header-section opacity-0 mb-8">
         <SectionTitle
           domain="contact"
-          badge="Contacto directo"
-          title="Hablemos de tu"
-          highlight="Proyecto"
-          description="Estoy aquí para ayudarte a construir experiencias web excepcionales."
+          :badge="contactIndex.badge"
+          :title="contactIndex.title"
+          :highlight="contactIndex.highlight"
+          :description="contactIndex.description"
           align="center"
         />
       </div>
@@ -16,21 +16,14 @@
       <!-- Tarjetas de Acción Rápida (WhatsApp & Email) -->
       <div class="quick-actions-section opacity-0">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-          <!-- WhatsApp Quick CTA -->
           <ContactQuickAction
-            href="https://api.whatsapp.com/send?phone=584125659767&text=Hola%20Julian%2C%20vi%20tu%20portafolio%20y%20me%20gustaría%20saber%20más%20sobre%20tus%20servicios%20de%20desarrollo."
-            icon="mdi:whatsapp"
-            title="Chatear por WhatsApp"
-            description="Respuesta inmediata: 0412-5659767"
-            external
-          />
-
-          <!-- Email Quick CTA -->
-          <ContactQuickAction
-            href="mailto:julian.developer@gmail.com"
-            icon="mdi:email-outline"
-            title="Enviar Correo Directo"
-            description="Escríbeme tu propuesta"
+            v-for="(action, index) in contactIndex.quickActions"
+            :key="index"
+            :href="action.href"
+            :icon="action.icon"
+            :title="action.title"
+            :description="action.description"
+            :external="action.external"
           />
         </div>
       </div>
@@ -40,6 +33,7 @@
         <ContactForm
           :is-submitting="isSubmitting"
           :show-success="showSuccess"
+          :faqs="faqs"
           @submit="handleFormSubmit"
         />
       </div>
@@ -47,10 +41,10 @@
       <!-- Sección de Educación / Trayectoria -->
       <div class="education-section opacity-0 border-t border-white/5 pt-10">
         <div class="mb-6">
-          <h2 class="text-xl font-bold text-white mb-2">Formación y Trayectoria</h2>
-          <p class="text-sm text-gray-400">Conoce más sobre mi preparación académica y mi experiencia en el sector tecnológico.</p>
+          <h2 class="text-xl font-bold text-white mb-2">{{ contactIndex.educationTitle }}</h2>
+          <p class="text-sm text-gray-400">{{ contactIndex.educationDescription }}</p>
         </div>
-        <ContactEducation />
+        <ContactEducation :experiences="experiences" />
       </div>
     </div>
 
@@ -58,19 +52,37 @@
     <FloatingTip
       v-if="showFloatingTip"
       v-model:open="isTipOpen"
-      message="Sigue scrolleando para conocer mi formación como desarrollador."
+      :message="contactIndex.floatingTip"
     />
   </section>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { gsap } from "gsap";
 import SectionTitle from "../Common/SectionTitle.vue";
 import ContactForm from "./ContactForm.vue";
 import ContactEducation from "./ContactEducation.vue";
 import ContactQuickAction from "./ContactQuickAction.vue";
 import FloatingTip from "../Common/FloatingTip.vue";
+
+const { data: contactData } = await useAsyncData('contact-index', () => queryCollection('contactIndex').first());
+const { data: contactEdu } = await useAsyncData('contact-education', () => queryCollection('contactEducation').first());
+const { data: contactFaq } = await useAsyncData('contact-faqs', () => queryCollection('contactFaqs').first());
+
+const contactIndex = computed(() => contactData.value || {
+  badge: "Contacto directo",
+  title: "Hablemos de tu",
+  highlight: "Proyecto",
+  description: "Estoy aquí para ayudarte a construir experiencias web excepcionales.",
+  quickActions: [],
+  educationTitle: "Formación y Trayectoria",
+  educationDescription: "Conoce más sobre mi preparación académica y mi experiencia en el sector tecnológico.",
+  floatingTip: "Sigue scrolleando para conocer mi formación como desarrollador."
+});
+
+const experiences = computed(() => contactEdu.value?.experiences || []);
+const faqs = computed(() => contactFaq.value?.faqs || []);
 
 const showFloatingTip = ref(false);
 const orchestratorRef = ref(null);
