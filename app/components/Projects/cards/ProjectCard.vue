@@ -84,14 +84,15 @@
         isExpanded ? 'card-content-expanded' : ''
       ]"
     >
-      <h3
+      <NuxtLink
+        :to="`/project-detail/${project.id}`"
         class="font-bold text-white mb-2 transition-[transform,colors] duration-300 will-change-transform group-hover:translate-x-1 hover:text-[var(--category-light)] cursor-pointer"
         :class="[
           variant === 'large' ? 'text-xl' : 'text-sm'
         ]"
       >
         {{ project.title }}
-      </h3>
+      </NuxtLink>
       <div :class="variant === 'large' ? 'mb-4' : 'mb-3'">
         <!-- Contenedor scrolleable al expandirse -->
         <div
@@ -121,10 +122,10 @@
       </div>
 
       <!-- Enlaces del proyecto -->
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-end">
         <NuxtLink
           :to="`/project-detail/${project.id}`"
-          class="text-xs font-medium flex items-center gap-1.5 transition-[transform,colors] duration-300 will-change-transform hover:translate-x-1 text-white/80 hover:text-[var(--category-light)]"
+          class="text-md font-medium flex items-center gap-1.5 transition-[transform,colors] duration-300 will-change-transform hover:translate-x-1 text-white hover:text-[var(--category-light)]"
         >
           <Icon name="mdi:arrow-right" class="w-3 h-3" />
           Ver detalles
