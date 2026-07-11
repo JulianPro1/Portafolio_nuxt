@@ -124,33 +124,41 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch, nextTick } from "vue";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ref, onMounted } from "vue";
 import SectionTitle from "~/components/Common/SectionTitle.vue";
 import ProjectsListScroll from "~/components/Projects/ProjectsListScroll.vue";
 import ProjectsDropdown from "~/components/Projects/ProjectsDropdown.vue";
 import ProjectsFloatingBubble from "~/components/Projects/ProjectsFloatingBubble.vue";
 import AnimatedElement from "~/components/Common/AnimatedElement.vue";
-import { useLenis } from "~/composables/useLenis";
+import { useProjectsOrchestratorAnimations } from "~/composables/projects/useProjectsOrchestratorAnimations";
 
 const { data: projectsData } = await useAsyncData('projects', () => queryCollection('projects').all())
 
-const lenis = useLenis();
-
-// Referencias para la animación GSAP
+// ─── Refs del DOM para las animaciones GSAP ───────────────────────────────────
 const tabsContainer = ref<HTMLElement | null>(null);
 const activeBgIndicator = ref<HTMLElement | null>(null);
 const activeLineIndicator = ref<HTMLElement | null>(null);
 const tabElements = ref<Record<string, HTMLElement>>({});
 
-// Función auxiliar para obtener las variables de estilos de categoría
+// ─── Estado reactivo ──────────────────────────────────────────────────────────
+const activeTab = ref("destacados");
+const isScrollingTo = ref(false);
+
+// ─── Definición de tabs ───────────────────────────────────────────────────────
+const tabs = [
+  { id: "destacados", label: "Destacados", icon: "mdi:star" },
+  { id: "en-produccion", label: "En producción", icon: "mdi:rocket-launch" },
+  { id: "en-desarrollo", label: "En desarrollo", icon: "mdi:code" },
+  { id: "personales", label: "Personales", icon: "mdi:account" },
+];
+
+// ─── Helper de estilos de categoría (sin GSAP, puramente CSS vars) ────────────
 const getCategoryStyles = (categoryId: string) => {
   const map: Record<string, string> = {
     "destacados": "destacados",
     "en-produccion": "produccion",
     "en-desarrollo": "desarrollo",
-    "personales": "personales"
+    "personales": "personales",
   };
   const suffix = map[categoryId] || "produccion";
   return {
@@ -160,194 +168,28 @@ const getCategoryStyles = (categoryId: string) => {
   };
 };
 
-// Definir los tabs disponibles
-const tabs = [
-  { id: "destacados", label: "Destacados", icon: "mdi:star" },
-  { id: "en-produccion", label: "En producción", icon: "mdi:rocket-launch" },
-  { id: "en-desarrollo", label: "En desarrollo", icon: "mdi:code" },
-  { id: "personales", label: "Personales", icon: "mdi:account" },
-];
-
-const activeTab = ref("destacados");
-const isScrollingTo = ref(false);
-let ctx: gsap.Context | null = null;
-
-// Obtener proyectos aplanados de una categoría
+// ─── Helper de proyectos por categoría ───────────────────────────────────────
 const getProjectsForCategory = (categoryId: string) => {
   if (!projectsData.value) return [];
   return projectsData.value.filter(p => p.categories?.includes(categoryId));
 };
 
-const updateActiveIndicator = (id: string, immediate = false) => {
-  const container = tabsContainer.value;
-  const button = tabElements.value[id];
-  const bg = activeBgIndicator.value;
-  const line = activeLineIndicator.value;
-
-  if (!container || !button || !bg || !line) return;
-
-  const containerRect = container.getBoundingClientRect();
-  const buttonRect = button.getBoundingClientRect();
-
-  const relativeLeft = buttonRect.left - containerRect.left;
-  const width = buttonRect.width;
-
-  // Animar el fondo flotante (con un efecto elástico muy fluido)
-  gsap.to(bg, {
-    left: relativeLeft + 6,
-    width: width - 12,
-    duration: immediate ? 0 : 0.45,
-    ease: "back.out(1.1)",
-    overwrite: "auto",
+// ─── Composable GSAP: toda la lógica de animación centralizada ────────────────
+const { init, handleResize, scrollToSection, scrollToProject } =
+  useProjectsOrchestratorAnimations({
+    tabs,
+    activeTab,
+    isScrollingTo,
+    tabsContainer,
+    activeBgIndicator,
+    activeLineIndicator,
+    tabElements,
   });
-
-  // Animar el indicador inferior
-  const lineWidth = Math.min(width * 0.4, 48); // 40% del ancho del botón o máx 48px
-  const lineLeft = relativeLeft + (width - lineWidth) / 2;
-
-  gsap.to(line, {
-    left: lineLeft,
-    width: lineWidth,
-    duration: immediate ? 0 : 0.4,
-    ease: "power2.out",
-    overwrite: "auto",
-  });
-};
-
-// Observar el tab activo para animar el indicador
-watch(activeTab, (newId) => {
-  updateActiveIndicator(newId);
-});
-
-// Desplazarse al proyecto específico con efecto GSAP y resaltado
-const scrollToProject = (projectId: string) => {
-  if (!import.meta.client) return;
-
-  const element = document.querySelector(`[data-project-id="${projectId}"]`);
-  if (element) {
-    isScrollingTo.value = true;
-
-    // Si el proyecto está en otra sección, sincronizamos el tab activo
-    const parentSection = element.closest('[data-category-section]');
-    if (parentSection) {
-      const categoryId = parentSection.getAttribute('data-category-section');
-      if (categoryId && activeTab.value !== categoryId) {
-        activeTab.value = categoryId;
-      }
-    }
-
-    const triggerHighlight = () => {
-      // Efecto visual premium: destello luminoso en la tarjeta enfocada
-      gsap.fromTo(element,
-        { filter: "brightness(1) drop-shadow(0 0 0px transparent)" },
-        {
-          filter: "brightness(1.15) drop-shadow(0 0 15px var(--category-accent))",
-          duration: 0.4,
-          yoyo: true,
-          repeat: 3,
-          ease: "sine.inOut",
-          onComplete: () => {
-            // Limpiar filtros al terminar la animación
-            gsap.set(element, { clearProps: "filter" });
-            isScrollingTo.value = false;
-          }
-        }
-      );
-    };
-
-    if (lenis) {
-      lenis.scrollTo(element, {
-        offset: -140, // Espacio para el navbar y toolbar sticky
-        duration: 1.2,
-        immediate: false,
-        onComplete: triggerHighlight
-      });
-    } else {
-      gsap.to(window, {
-        duration: 1,
-        scrollTo: {
-          y: element,
-          offsetY: 140, // Espacio para el navbar y toolbar sticky
-        },
-        ease: "power4.inOut",
-        onComplete: triggerHighlight
-      });
-    }
-  }
-};
-
-const scrollToSection = (id: string) => {
-  if (!import.meta.client) return;
-
-  isScrollingTo.value = true;
-  activeTab.value = id;
-
-  const onScrollFinished = () => {
-    // Pequeño retardo para evitar que el trigger de scroll normal anule la selección
-    setTimeout(() => {
-      isScrollingTo.value = false;
-    }, 100);
-  };
-
-  if (lenis) {
-    lenis.scrollTo(`#${id}`, {
-      offset: -120, // Altura del sticky navbar más un margen
-      duration: 1.0,
-      immediate: false,
-      onComplete: onScrollFinished
-    });
-  } else {
-    gsap.to(window, {
-      duration: 0.8,
-      scrollTo: {
-        y: `#${id}`,
-        offsetY: 120, // Altura del sticky navbar más un margen
-      },
-      ease: "power3.inOut",
-      onComplete: onScrollFinished
-    });
-  }
-};
-
-const handleResize = () => {
-  updateActiveIndicator(activeTab.value, true);
-};
 
 onMounted(() => {
   if (import.meta.client) {
-    // ScrollTrigger y ScrollToPlugin ya están registrados por gsap.client.ts (plugin global)
-    ctx = gsap.context(() => {
-      tabs.forEach((tab) => {
-        ScrollTrigger.create({
-          trigger: `#${tab.id}`,
-          start: "top 35%",
-          end: "bottom 35%",
-          onToggle: (self) => {
-            if (self.isActive && !isScrollingTo.value) {
-              activeTab.value = tab.id;
-            }
-          },
-        });
-      });
-    });
-
-    // Posicionar el indicador inicialmente tras el renderizado
-    nextTick(() => {
-      setTimeout(() => {
-        updateActiveIndicator(activeTab.value, true);
-      }, 200);
-    });
-
+    init();
     window.addEventListener("resize", handleResize);
-  }
-});
-
-onUnmounted(() => {
-  if (ctx) {
-    ctx.revert();
-  }
-  if (import.meta.client) {
-    window.removeEventListener("resize", handleResize);
   }
 });
 </script>

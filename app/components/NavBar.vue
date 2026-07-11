@@ -6,12 +6,12 @@
     <!-- Línea de progreso de scroll -->
     <div
       class="absolute bottom-0 left-0 h-[2px] w-full pointer-events-none"
-      style="transform-origin: left; transition: opacity 0.3s ease, box-shadow 0.3s ease; will-change: transform;"
+      style="transform-origin: left; will-change: transform, background; transition: opacity 0.3s ease, box-shadow 0.6s ease, background 0.6s ease;"
       :style="{
         transform: `scaleX(${scrollProgress / 100})`,
-        background: `linear-gradient(to right, ${backgroundStore.navbarProgressColors.join(', ')})`,
+        background: `linear-gradient(to right, ${backgroundStore.navbarProgressColorsActive.join(', ')})`,
         opacity: scrollProgress > 2 ? 1 : 0,
-        boxShadow: `0 0 8px ${backgroundStore.navbarProgressColors[0]}80`
+        boxShadow: `0 0 8px ${backgroundStore.navbarProgressColorsActive[0]}80`
       }"
     />
 

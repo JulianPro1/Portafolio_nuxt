@@ -1,7 +1,7 @@
 ---
 id: 'keystone-ecosystem'
 title: 'Ecosistema E-Commerce & Catálogo: Keystone Repuestos'
-category: 'Frontend Architecture'
+category: 'Frontend'
 icon: '/img/project-keystone/logo-keystone.png'
 technologies:
   - 'Astro'

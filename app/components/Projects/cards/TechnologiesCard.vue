@@ -3,9 +3,14 @@
     <!-- Contenido -->
     <div class="relative z-10 flex flex-col items-center justify-center h-full p-4 gap-2 transition-transform duration-300 will-change-transform group-hover:scale-[1.02]">
       <!-- Header icon -->
-      <div class="w-10 h-10 flex items-center justify-center rounded-xl border border-[color:var(--category-accent)] bg-[color:color-mix(in_srgb,var(--category-accent)_15%,transparent)] transition-[transform,background-color] duration-300 will-change-transform group-hover:scale-105 group-hover:bg-[color:color-mix(in_srgb,var(--category-accent)_25%,transparent)]">
-        <Icon name="mdi:code-tags" class="w-5 h-5 text-[var(--category-accent)]" />
+      <div class="w-10 h-10 hidden sm:flex items-center justify-center rounded-xl border border-[color:var(--category-accent)] bg-[color:color-mix(in_srgb,var(--category-accent)_15%,transparent)] transition-[transform,background-color] duration-300 will-change-transform group-hover:scale-105 group-hover:bg-[color:color-mix(in_srgb,var(--category-accent)_25%,transparent)]">
+        <Icon name="mdi:code-tags" class="w-8 h-8 text-[var(--category-accent)] " />
       </div>
+
+      <!-- Label -->
+      <span class="text-xs font-semibold uppercase tracking-widest text-white  select-none my-2">
+        Tecnologías
+      </span>
 
       <!-- Tech chips -->
       <div class="flex flex-wrap gap-1.5 justify-center max-w-full">

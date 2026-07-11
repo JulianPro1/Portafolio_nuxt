@@ -1,7 +1,7 @@
 ---
 id: 'ticz-agencia-landing'
 title: 'Ticz: Portal Corporativo & Landing Agency'
-category: 'Frontend Architecture'
+category: 'Frontend'
 icon: '/img/project-ticz/logo-ticz.png'
 technologies:
   - 'Astro'

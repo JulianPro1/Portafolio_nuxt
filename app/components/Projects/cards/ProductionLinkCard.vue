@@ -6,7 +6,7 @@
   >
     <!-- Contenido -->
     <div class="relative z-10 flex flex-col items-center justify-center h-full p-6 transition-transform duration-300 will-change-transform group-hover:scale-[1.02]">
-      <div class="w-14 h-14 flex items-center justify-center rounded-xl border border-[color:var(--category-accent)] bg-[color:color-mix(in_srgb,var(--category-accent)_15%,transparent)] mb-4 transition-[transform,background-color] duration-300 will-change-transform group-hover:scale-105 group-hover:bg-[color:color-mix(in_srgb,var(--category-accent)_25%,transparent)]">
+      <div class="w-14 h-14 hidden sm:flex items-center justify-center rounded-xl border border-[color:var(--category-accent)] bg-[color:color-mix(in_srgb,var(--category-accent)_15%,transparent)] mb-4 transition-[transform,background-color] duration-300 will-change-transform group-hover:scale-105 group-hover:bg-[color:color-mix(in_srgb,var(--category-accent)_25%,transparent)]">
         <Icon name="mdi:rocket-launch" class="w-8 h-8 text-[var(--category-accent)]" />
       </div>
       <span class="text-sm font-semibold text-white mb-1 text-center">Link de producción</span>

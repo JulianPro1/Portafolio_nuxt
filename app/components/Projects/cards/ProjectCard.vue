@@ -78,8 +78,11 @@
 
     <!-- Contenido de la card -->
     <div
-      class="absolute bottom-0 left-0 right-0 z-10"
-      :class="variant === 'large' ? 'p-5' : 'p-4'"
+      class="absolute bottom-0 left-0 right-0 z-10 transition-[background,backdrop-filter] duration-300"
+      :class="[
+        variant === 'large' ? 'p-5' : 'p-4',
+        isExpanded ? 'card-content-expanded' : ''
+      ]"
     >
       <h3
         class="font-bold text-white mb-2 transition-[transform,colors] duration-300 will-change-transform group-hover:translate-x-1 hover:text-[var(--category-light)] cursor-pointer"
@@ -89,9 +92,33 @@
       >
         {{ project.title }}
       </h3>
-      <p class="text-global-text-muted line-clamp-2 leading-relaxed" :class="variant === 'large' ? 'text-xs mb-4' : 'text-[11px] mb-3'">
-        {{ project.description }}
-      </p>
+      <div :class="variant === 'large' ? 'mb-4' : 'mb-3'">
+        <!-- Contenedor scrolleable al expandirse -->
+        <div
+          ref="wrapperRef"
+          class="desc-scroll-wrapper"
+          :class="[isScrollReady ? 'desc-scroll-ready' : '']"
+        >
+          <p
+            ref="descRef"
+            class="text-global-text-muted leading-relaxed"
+            :class="[
+              variant === 'large' ? 'text-xs' : 'text-[11px]',
+              showFullText ? '' : 'line-clamp-2'
+            ]"
+          >
+            {{ project.description }}
+          </p>
+        </div>
+        <button
+          v-if="isClamped"
+          class="ver-mas-btn mt-1.5 text-[10px] font-semibold tracking-wide transition-colors duration-200"
+          :style="`color: var(--category-light)`"
+          @click.stop="toggleExpand"
+        >
+          {{ isExpanded ? 'ver menos ↑' : 'ver más ↓' }}
+        </button>
+      </div>
 
       <!-- Enlaces del proyecto -->
       <div class="flex items-center justify-between">
@@ -126,6 +153,7 @@
 </template>
 
 <script setup lang="ts">
+import { gsap } from 'gsap'
 import type { BadgeConfig, ColorScheme, LinksConfig } from '~/types/projects'
 
 const props = defineProps<{
@@ -135,6 +163,108 @@ const props = defineProps<{
   colorScheme: ColorScheme
   linksConfig: LinksConfig
 }>()
+
+const isExpanded = ref(false)
+const showFullText = ref(false)   // delayed so line-clamp fades with the container
+const isScrollReady = ref(false)  // activated only after transition ends to avoid scrollbar flash
+const isClamped = ref(false)
+const descRef = ref<HTMLElement | null>(null)
+const wrapperRef = ref<HTMLElement | null>(null)
+
+// Max expanded height in px (~5 lines). Content taller than this will scroll.
+const MAX_EXPANDED_HEIGHT = 128 // ~8em at 16px base
+
+function toggleExpand() {
+  const el = wrapperRef.value
+  if (!el) return
+
+  if (!isExpanded.value) {
+    // Reveal text first so GSAP can read the real scrollHeight
+    isExpanded.value = true
+    showFullText.value = true
+    isScrollReady.value = false
+
+    // Measure real content height with line-clamp removed
+    const realHeight = descRef.value?.scrollHeight ?? MAX_EXPANDED_HEIGHT
+    const targetHeight = Math.min(realHeight, MAX_EXPANDED_HEIGHT)
+    const willScroll = realHeight > MAX_EXPANDED_HEIGHT
+
+    gsap.fromTo(
+      el,
+      { height: el.offsetHeight },
+      {
+        height: targetHeight,
+        duration: 0.42,
+        ease: 'power2.out',
+        onComplete: () => {
+          // Enable scroll only when content exceeds the cap
+          if (willScroll) isScrollReady.value = true
+        }
+      }
+    )
+  } else {
+    // Closing: disable scroll first, then collapse
+    isScrollReady.value = false
+    const currentHeight = el.offsetHeight
+
+    gsap.fromTo(
+      el,
+      { height: currentHeight },
+      {
+        height: COLLAPSED_HEIGHT,
+        duration: 0.38,
+        ease: 'power2.inOut',
+        onComplete: () => {
+          isExpanded.value = false
+          showFullText.value = false
+          // Clear inline height so CSS takes over again
+          gsap.set(el, { clearProps: 'height' })
+        }
+      }
+    )
+  }
+}
+
+function checkClamped() {
+  if (!descRef.value) return
+  // Temporarily remove clamp to get the real scrollHeight
+  const el = descRef.value
+  el.style.webkitLineClamp = 'unset'
+  el.style.overflow = 'visible'
+  const fullHeight = el.scrollHeight
+  el.style.webkitLineClamp = ''
+  el.style.overflow = ''
+  // Compare against 2-line height (lineHeight * 2)
+  const lineHeight = parseFloat(getComputedStyle(el).lineHeight)
+  const maxHeight = lineHeight * 2
+  isClamped.value = fullHeight > maxHeight + 2 // +2px tolerance
+}
+
+let _observer: ResizeObserver | null = null
+
+// Collapsed height in pixels (~2 lines). Resolved once on mount.
+let COLLAPSED_HEIGHT = 51.2 // fallback: 16px * 1.6 lineHeight * 2 lines
+
+onMounted(() => {
+  nextTick(() => {
+    if (wrapperRef.value) {
+      // Capture the real collapsed height after layout
+      COLLAPSED_HEIGHT = wrapperRef.value.offsetHeight
+    }
+    checkClamped()
+    if (typeof ResizeObserver !== 'undefined' && descRef.value) {
+      _observer = new ResizeObserver(checkClamped)
+      _observer.observe(descRef.value)
+    }
+    // Fallback for desktop where grid layout settles slightly later
+    setTimeout(checkClamped, 150)
+  })
+})
+
+onUnmounted(() => {
+  _observer?.disconnect()
+  gsap.killTweensOf(wrapperRef.value)
+})
 </script>
 
 <style scoped>
@@ -146,5 +276,67 @@ const props = defineProps<{
   box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Fondo oscuro sólido cuando el texto está expandido */
+/* La transición se define en el elemento padre (inline class) */
+[class~="card-content-expanded"],
+.card-content-expanded {
+  background: linear-gradient(
+    to top,
+    rgba(9, 9, 11, 0.98) 0%,
+    rgba(9, 9, 11, 0.95) 70%,
+    rgba(9, 9, 11, 0.85) 100%
+  ) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+  transition:
+    background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    backdrop-filter 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Contenedor — GSAP controla height via JS, CSS sólo define el estado inicial */
+.desc-scroll-wrapper {
+  overflow: hidden;
+  /* altura inicial equivalente a ~2 líneas; GSAP la pisa al animar */
+  height: 3.2em;
+  overscroll-behavior: contain;
+}
+
+/* Scroll habilitado sólo DESPUÉS de que la animación GSAP termina (evita flash de scrollbar) */
+.desc-scroll-wrapper.desc-scroll-ready {
+  overflow-y: auto;
+}
+
+/* Scrollbar sutil */
+.desc-scroll-wrapper.desc-expanded::-webkit-scrollbar {
+  width: 3px;
+}
+
+.desc-scroll-wrapper.desc-expanded::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.desc-scroll-wrapper.desc-expanded::-webkit-scrollbar-thumb {
+  background: var(--category-accent, rgba(255, 255, 255, 0.2));
+  border-radius: 99px;
+}
+
+.ver-mas-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.85;
+  letter-spacing: 0.04em;
+}
+
+.ver-mas-btn:hover {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 </style>

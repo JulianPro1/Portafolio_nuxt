@@ -1,41 +1,22 @@
 import { defineStore } from 'pinia'
+import { ROUTE_DEFAULTS } from '@/constants/colors'
+import type { RouteThemeConfig } from '@/types/route-themes'
 
-interface RouteThemeConfig {
-  backgroundColor: string
-  backgroundClass?: string
-  showWaves?: boolean
-  wavesGradient?: string
-  navbarBorderColor: string
-  navbarAccentColor: string
-  navbarHighlightColor: string
-  /** Colores del degradado de la barra de progreso de scroll (mínimo 2) */
-  navbarProgressColors?: string[]
-}
-
-const DEFAULT_CONFIG = {
-  backgroundColor: 'hsl(0, 0%, 4%)',
-  backgroundClass: '',
-  showWaves: false,
-  wavesGradient: 'about-gradient-subtle',
-  navbarBorderColor: 'hsl(271, 100%, 14%)',
-  navbarAccentColor: 'hsl(272, 63%, 46%)',
-  navbarHighlightColor: 'hsl(225, 75%, 48%)',
-  navbarAccentColorHslComponents: '272, 63%, 46%',
-  navbarProgressColors: ['hsl(272, 63%, 46%)', 'hsl(225, 75%, 48%)', 'hsl(195, 80%, 55%)'] as string[],
-} as const
+/** Fallback absoluto si la ruta no coincide con ninguna entrada de ROUTE_DEFAULTS */
+const ABSOLUTE_FALLBACK = ROUTE_DEFAULTS['/']!
 
 export const useBackgroundStore = defineStore('background', {
   state: () => ({
-    backgroundColor: DEFAULT_CONFIG.backgroundColor as string,
-    backgroundClass: DEFAULT_CONFIG.backgroundClass as string,
-    showWaves: DEFAULT_CONFIG.showWaves as boolean,
-    wavesGradient: DEFAULT_CONFIG.wavesGradient as string,
-    navbarBorderColor: DEFAULT_CONFIG.navbarBorderColor as string,
-    navbarAccentColor: DEFAULT_CONFIG.navbarAccentColor as string,
-    navbarHighlightColor: DEFAULT_CONFIG.navbarHighlightColor as string,
-    navbarAccentColorHslComponents: DEFAULT_CONFIG.navbarAccentColorHslComponents as string,
-    /** Colores del degradado de la barra de progreso de scroll */
-    navbarProgressColors: [...DEFAULT_CONFIG.navbarProgressColors] as string[],
+    backgroundColor: ABSOLUTE_FALLBACK.backgroundColor as string,
+    backgroundClass: ABSOLUTE_FALLBACK.backgroundClass as string,
+    navbarBorderColor: ABSOLUTE_FALLBACK.navbarBorderColor as string,
+    navbarAccentColor: ABSOLUTE_FALLBACK.navbarAccentColor as string,
+    navbarHighlightColor: ABSOLUTE_FALLBACK.navbarHighlightColor as string,
+    navbarAccentColorHslComponents: ABSOLUTE_FALLBACK.navbarAccentColorHslComponents as string,
+    /** Colores base del degradado de la ruta actual (fuente de verdad) */
+    navbarProgressColors: [...(ABSOLUTE_FALLBACK.navbarProgressColors ?? [])] as string[],
+    /** Colores activos que renderiza la navbar (controlados por componentes via store) */
+    navbarProgressColorsActive: [...(ABSOLUTE_FALLBACK.navbarProgressColors ?? [])] as string[],
     domainAccentColors: {
       about: 'hsl(270, 67%, 45%)',
       contact: 'hsl(145, 65%, 42%)',
@@ -45,8 +26,6 @@ export const useBackgroundStore = defineStore('background', {
     routeThemes: {
       '/': {
         backgroundColor: 'hsl(0, 0%, 4%)',
-        showWaves: true,
-        wavesGradient: 'about-gradient-subtle',
         navbarBorderColor: 'hsl(271, 100%, 14%)',
         navbarAccentColor: 'hsl(272, 63%, 46%)',
         navbarHighlightColor: 'hsl(330, 90%, 55%)',
@@ -65,6 +44,7 @@ export const useBackgroundStore = defineStore('background', {
         navbarAccentColor: 'hsl(225, 75%, 48%)',
         navbarHighlightColor: 'hsl(189, 95%, 43%)',
         navbarProgressColors: ['hsl(225, 75%, 48%)', 'hsl(207, 85%, 55%)', 'hsl(189, 95%, 43%)', 'hsl(135, 70%, 42%)'],
+        deferGradient: true,
       },
       '/skills': {
         backgroundColor: 'hsl(0, 0%, 4%)',
@@ -104,19 +84,44 @@ export const useBackgroundStore = defineStore('background', {
       this.backgroundClass = className
     },
 
-    setWaves(show: boolean, gradient: string = 'about-gradient-subtle') {
-      this.showWaves = show
-      this.wavesGradient = gradient
-    },
 
-    setNavbarColors(borderColor: string, accentColor: string, highlightColor: string, progressColors?: string[]) {
+    setNavbarColors(
+      borderColor: string,
+      accentColor: string,
+      highlightColor: string,
+      progressColors?: string[],
+      deferGradient?: boolean,
+    ) {
       this.navbarBorderColor = borderColor
       this.navbarAccentColor = accentColor
       this.navbarHighlightColor = highlightColor
       this.navbarAccentColorHslComponents = this.extractHslComponents(accentColor)
       if (progressColors && progressColors.length >= 2) {
         this.navbarProgressColors = progressColors
+        if (deferGradient) {
+          // Rutas con tabs (ej: /projects): arrancar con un solo color.
+          // El composable externo ajustará progresivamente según el tab activo.
+          const firstColor = progressColors[0]!
+          this.navbarProgressColorsActive = [firstColor, firstColor]
+        } else {
+          // Rutas sin tabs (about, skills, contact, etc.): gradiente completo de inmediato.
+          this.navbarProgressColorsActive = progressColors
+        }
       }
+    },
+
+    /**
+     * Actualiza los colores activos que renderiza la navbar.
+     * Llamado directamente por componentes/composables para controlar el estado visual
+     * sin necesidad de lógica de slicing en el store.
+     * @param colors Array de colores HSL (mínimo 2 para gradiente válido)
+     */
+    setNavbarProgressColorsActive(colors: string[]) {
+      if (!colors || colors.length === 0) return
+      // Garantizar mínimo 2 colores para que el gradiente CSS sea válido
+      this.navbarProgressColorsActive = colors.length === 1
+        ? [colors[0]!, colors[0]!]
+        : colors
     },
 
     extractHslComponents(color: string): string {
@@ -149,16 +154,35 @@ export const useBackgroundStore = defineStore('background', {
       return '272, 63%, 46%'
     },
 
-    resetBackground() {
-      this.backgroundColor = DEFAULT_CONFIG.backgroundColor
-      this.backgroundClass = DEFAULT_CONFIG.backgroundClass
-      this.showWaves = DEFAULT_CONFIG.showWaves
-      this.wavesGradient = DEFAULT_CONFIG.wavesGradient
-      this.navbarBorderColor = DEFAULT_CONFIG.navbarBorderColor
-      this.navbarAccentColor = DEFAULT_CONFIG.navbarAccentColor
-      this.navbarHighlightColor = DEFAULT_CONFIG.navbarHighlightColor
-      this.navbarAccentColorHslComponents = DEFAULT_CONFIG.navbarAccentColorHslComponents
-      this.navbarProgressColors = [...DEFAULT_CONFIG.navbarProgressColors]
+    /**
+     * Resetea el estado al default de la ruta indicada.
+     * Si la ruta no tiene entrada en ROUTE_DEFAULTS se usa ABSOLUTE_FALLBACK.
+     * Esto evita que un error en /projects aplique los colores de /about.
+     */
+    resetBackground(routePath?: string) {
+      const defaults = routePath
+        ? this.resolveRouteDefaults(routePath)
+        : ABSOLUTE_FALLBACK
+      this.backgroundColor = defaults.backgroundColor
+      this.backgroundClass = defaults.backgroundClass ?? ''
+      this.navbarBorderColor = defaults.navbarBorderColor
+      this.navbarAccentColor = defaults.navbarAccentColor
+      this.navbarHighlightColor = defaults.navbarHighlightColor
+      this.navbarAccentColorHslComponents = defaults.navbarAccentColorHslComponents ?? this.extractHslComponents(defaults.navbarAccentColor)
+      this.navbarProgressColors = [...(defaults.navbarProgressColors ?? [])]
+      this.navbarProgressColorsActive = [...(defaults.navbarProgressColors ?? [])]
+    },
+
+    /**
+     * Resuelve el default correcto para una ruta dada.
+     * Prueba match exacto primero, luego por prefijo (ej: /project-detail/123 → /project-detail).
+     */
+    resolveRouteDefaults(routePath: string) {
+      // Match exacto
+      if (ROUTE_DEFAULTS[routePath]) return ROUTE_DEFAULTS[routePath]!
+      // Match por prefijo (rutas dinámicas como /project-detail/:id)
+      const prefix = Object.keys(ROUTE_DEFAULTS).find(key => routePath.startsWith(key + '/'))
+      return prefix ? ROUTE_DEFAULTS[prefix]! : ABSOLUTE_FALLBACK
     },
 
     applyThemeForRoute(routePath: string) {
@@ -180,12 +204,16 @@ export const useBackgroundStore = defineStore('background', {
         if (theme.backgroundClass) {
           this.setBackgroundClass(theme.backgroundClass)
         }
-        if (theme.showWaves !== undefined) {
-          this.setWaves(theme.showWaves, theme.wavesGradient || 'about-gradient-subtle')
-        }
-        this.setNavbarColors(theme.navbarBorderColor, theme.navbarAccentColor, theme.navbarHighlightColor, theme.navbarProgressColors)
+        this.setNavbarColors(
+          theme.navbarBorderColor,
+          theme.navbarAccentColor,
+          theme.navbarHighlightColor,
+          theme.navbarProgressColors,
+          theme.deferGradient,
+        )
       } else {
-        this.resetBackground()
+        // Pasar la ruta para que el reset use los colores correctos de esa vista
+        this.resetBackground(routePath)
       }
     },
 
