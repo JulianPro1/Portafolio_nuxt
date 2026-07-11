@@ -168,6 +168,7 @@ const isExpanded = ref(false)
 const showFullText = ref(false)   // delayed so line-clamp fades with the container
 const isScrollReady = ref(false)  // activated only after transition ends to avoid scrollbar flash
 const isClamped = ref(false)
+const isAnimating = ref(false)    // debounce: blocks new toggles while animation runs
 const descRef = ref<HTMLElement | null>(null)
 const wrapperRef = ref<HTMLElement | null>(null)
 
@@ -176,7 +177,9 @@ const MAX_EXPANDED_HEIGHT = 128 // ~8em at 16px base
 
 function toggleExpand() {
   const el = wrapperRef.value
-  if (!el) return
+  if (!el || isAnimating.value) return  // debounce: ignore while animating
+
+  isAnimating.value = true
 
   if (!isExpanded.value) {
     // Reveal text first so GSAP can read the real scrollHeight
@@ -199,13 +202,19 @@ function toggleExpand() {
         onComplete: () => {
           // Enable scroll only when content exceeds the cap
           if (willScroll) isScrollReady.value = true
+          isAnimating.value = false
         }
       }
     )
   } else {
-    // Closing: disable scroll first, then collapse
+    // Closing: apply line-clamp IMMEDIATELY to avoid layout shift at animation end
+    showFullText.value = false
     isScrollReady.value = false
     const currentHeight = el.offsetHeight
+
+    // Re-compute just before collapsing to account for any breakpoint/font change
+    COLLAPSED_HEIGHT = computeCollapsedHeight()
+    el.style.setProperty('--collapsed-h', `${COLLAPSED_HEIGHT}px`)
 
     gsap.fromTo(
       el,
@@ -216,9 +225,9 @@ function toggleExpand() {
         ease: 'power2.inOut',
         onComplete: () => {
           isExpanded.value = false
-          showFullText.value = false
           // Clear inline height so CSS takes over again
           gsap.set(el, { clearProps: 'height' })
+          isAnimating.value = false
         }
       }
     )
@@ -242,22 +251,48 @@ function checkClamped() {
 
 let _observer: ResizeObserver | null = null
 
-// Collapsed height in pixels (~2 lines). Resolved once on mount.
-let COLLAPSED_HEIGHT = 51.2 // fallback: 16px * 1.6 lineHeight * 2 lines
+/** Computes and stores the real 2-line height from the paragraph's lineHeight */
+function computeCollapsedHeight(): number {
+  if (!descRef.value) return 40 // safe fallback
+  const lh = parseFloat(getComputedStyle(descRef.value).lineHeight)
+  // lineHeight may be 'normal' → fallback to fontSize * 1.5
+  const lineHeight = isNaN(lh)
+    ? parseFloat(getComputedStyle(descRef.value).fontSize) * 1.5
+    : lh
+  return Math.ceil(lineHeight * 2)
+}
+
+// Collapsed height in pixels (~2 lines). Re-computed dynamically to stay in sync across breakpoints.
+let COLLAPSED_HEIGHT = 0 // 0 = unset; resolved on mount and before each collapse
 
 onMounted(() => {
   nextTick(() => {
     if (wrapperRef.value) {
-      // Capture the real collapsed height after layout
-      COLLAPSED_HEIGHT = wrapperRef.value.offsetHeight
+      // Compute from real lineHeight so it stays in sync at every breakpoint
+      COLLAPSED_HEIGHT = computeCollapsedHeight()
+      // Sync the CSS custom property so CSS height matches JS value exactly
+      wrapperRef.value.style.setProperty('--collapsed-h', `${COLLAPSED_HEIGHT}px`)
     }
     checkClamped()
     if (typeof ResizeObserver !== 'undefined' && descRef.value) {
-      _observer = new ResizeObserver(checkClamped)
+      _observer = new ResizeObserver(() => {
+        checkClamped()
+        // Re-sync collapsed height when font/layout changes (e.g. orientation change)
+        if (!isExpanded.value && wrapperRef.value) {
+          COLLAPSED_HEIGHT = computeCollapsedHeight()
+          wrapperRef.value.style.setProperty('--collapsed-h', `${COLLAPSED_HEIGHT}px`)
+        }
+      })
       _observer.observe(descRef.value)
     }
     // Fallback for desktop where grid layout settles slightly later
-    setTimeout(checkClamped, 150)
+    setTimeout(() => {
+      checkClamped()
+      if (!isExpanded.value && wrapperRef.value) {
+        COLLAPSED_HEIGHT = computeCollapsedHeight()
+        wrapperRef.value.style.setProperty('--collapsed-h', `${COLLAPSED_HEIGHT}px`)
+      }
+    }, 150)
   })
 })
 
@@ -295,11 +330,12 @@ onUnmounted(() => {
     backdrop-filter 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Contenedor — GSAP controla height via JS, CSS sólo define el estado inicial */
+/* Contenedor — GSAP controla height via JS, CSS sólo define el estado inicial.
+   --collapsed-h se inyecta por JS en onMounted y antes de cada cierre,
+   garantizando que CSS y GSAP usen exactamente el mismo valor de píxeles. */
 .desc-scroll-wrapper {
   overflow: hidden;
-  /* altura inicial equivalente a ~2 líneas; GSAP la pisa al animar */
-  height: 3.2em;
+  height: var(--collapsed-h, 3.2em);
   overscroll-behavior: contain;
 }
 
