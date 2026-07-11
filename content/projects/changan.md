@@ -11,7 +11,6 @@ technologies:
   - 'HTML'
   - 'CSS3'
 liveUrl: 'https://app.changan.com.ve'
-caseStudyUrl: null
 collaborators: 1
 developmentTime: '4 meses'
 showTechCard: true

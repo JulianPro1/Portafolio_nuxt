@@ -10,7 +10,6 @@ technologies:
   - 'Bootstrap 5'
   - 'Sass'
 liveUrl: 'https://ccd.fvf.com.ve'
-caseStudyUrl: null
 collaborators: 4
 developmentTime: '4 meses'
 showTechCard: true

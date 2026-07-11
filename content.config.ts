@@ -14,7 +14,6 @@ export default defineContentConfig({
         technologies: z.array(z.string()).optional(),
         liveUrl: z.string().optional(),
         githubUrl: z.string().optional(),
-        caseStudyUrl: z.string().nullable().optional(),
         collaborators: z.number().optional(),
         developmentTime: z.string().optional(),
         showTechCard: z.boolean().optional(),

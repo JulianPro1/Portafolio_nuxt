@@ -11,7 +11,6 @@ technologies:
   - 'HTML5'
   - 'CSS3'
 liveUrl: 'https://app.farmaciassanignacio.com'
-caseStudyUrl: null
 collaborators: 2
 developmentTime: '4 meses'
 showTechCard: true

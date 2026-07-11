@@ -1,11 +1,13 @@
 # Patrón de Tipos TypeScript — Portafolio Julian
 
 ## Filosofía
+
 Tipos explícitos para todos los dominios del proyecto. Los tipos se centralizan en `app/types/`, agrupados por dominio. Nunca usar `any`; preferir interfaces sobre types para objetos.
 
 ## Archivos de Tipos Existentes
 
 ### `app/types/index.ts` — Tipos globales básicos
+
 Tipos transversales a toda la app.
 
 ### `app/types/projects.ts` — Dominio de proyectos
@@ -14,15 +16,15 @@ Tipos transversales a toda la app.
 // Interfaz de configuración de badge de categoría
 export interface BadgeConfig {
   text: string
-  icon: string    // formato mdi: (ej: 'mdi:star')
-  color: string   // siempre HSL string
+  icon: string // formato mdi: (ej: 'mdi:star')
+  color: string // siempre HSL string
 }
 
 // Esquema de colores de una categoría
 export interface ColorScheme {
-  primary: string   // HSL string
+  primary: string // HSL string
   secondary: string // HSL string
-  hover: string     // HSL string
+  hover: string // HSL string
 }
 
 // Configuración de links de un proyecto
@@ -40,11 +42,11 @@ export interface CategoryConfig {
 
 // Datos de un proyecto
 export interface ProjectData {
-  id: string                  // kebab-case único
+  id: string // kebab-case único
   title: string
-  category: string            // coincide con clave en categoryConfigs
+  category: string // coincide con clave en categoryConfigs
   description: string
-  icon: string                // prefijo mdi:
+  icon: string // prefijo mdi:
   technologies: string[]
   liveUrl?: string
   githubUrl?: string
@@ -82,14 +84,14 @@ export interface ProjectSlide {
 
 ```vue
 <script setup lang="ts">
-// Interface local — no se exporta
-interface Props {
-  title: string
-  items: ItemType[]    // importar ItemType de ~/types/
-  color?: string       // HSL string, opcional
-}
+  // Interface local — no se exporta
+  interface Props {
+    title: string
+    items: ItemType[] // importar ItemType de ~/types/
+    color?: string // HSL string, opcional
+  }
 
-const props = defineProps<Props>()
+  const props = defineProps<Props>()
 </script>
 ```
 

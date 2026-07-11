@@ -130,24 +130,6 @@
           <Icon name="mdi:arrow-right" class="w-3 h-3" />
           Ver detalles
         </NuxtLink>
-        <div class="flex items-center gap-2">
-          <a
-            v-if="linksConfig.showGithub && project.githubUrl"
-            :href="project.githubUrl"
-            target="_blank"
-            class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:text-white hover:border-[var(--category-light)] transition-[background-color,border-color,color] duration-300"
-          >
-            <Icon name="mdi:github" :class="variant === 'large' ? 'w-4 h-4' : 'w-3.5 h-3.5'" />
-          </a>
-          <a
-            v-if="linksConfig.showCaseStudy && project.caseStudyUrl"
-            :href="project.caseStudyUrl"
-            target="_blank"
-            class="w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:text-white hover:border-[var(--category-light)] transition-[background-color,border-color,color] duration-300"
-          >
-            <Icon name="mdi:file-document" :class="variant === 'large' ? 'w-4 h-4' : 'w-3.5 h-3.5'" />
-          </a>
-        </div>
       </div>
     </div>
   </div>

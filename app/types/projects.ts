@@ -30,7 +30,6 @@ export interface ProjectData {
   technologies: string[]
   liveUrl?: string
   githubUrl?: string
-  caseStudyUrl?: string
   collaborators?: number
   developmentTime?: string
   showTechCard?: boolean

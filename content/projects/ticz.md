@@ -11,7 +11,6 @@ technologies:
   - 'Lenis Scroll'
   - 'Swiper'
 liveUrl: 'https://ticz.dev'
-caseStudyUrl: null
 collaborators: 5
 developmentTime: 'En proceso'
 showTechCard: true

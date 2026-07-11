@@ -10,7 +10,6 @@ technologies:
   - 'Bootstrap 5'
   - 'Sass'
 liveUrl: 'https://colaboradores.regnumchristi.org'
-caseStudyUrl: null
 collaborators: 4
 developmentTime: '7 meses'
 showTechCard: true
