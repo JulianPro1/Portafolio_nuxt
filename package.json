@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@iconify-json/mdi": "^1.2.3",
+    "@nuxtjs/google-fonts": "^3.2.0",
     "better-sqlite3": "^12.11.1"
   }
 }

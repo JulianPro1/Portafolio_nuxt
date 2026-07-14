@@ -1,6 +1,11 @@
 export default {
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+      },
       colors: {
         // Globales / Compartidos
         'global-bg': 'var(--global-bg)',

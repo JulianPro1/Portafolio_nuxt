@@ -60,7 +60,19 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@pinia/nuxt",
     "@nuxt/content",
+    "@nuxtjs/google-fonts",
   ],
+  googleFonts: {
+    families: {
+      'Plus+Jakarta+Sans': [400, 500, 600, 700, 800],
+      'Inter': [400, 500, 600, 700],
+      'JetBrains+Mono': [400, 500],
+    },
+    display: 'swap',
+    prefetch: true,
+    preconnect: true,
+    preload: true,
+  },
   icon: {
     serverBundle: 'local',
   },
