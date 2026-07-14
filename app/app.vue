@@ -3,7 +3,9 @@
     <PreLoader v-if="!preloaderDone" @done="preloaderDone = true" />
     <Transition name="page-reveal">
       <div v-if="preloaderDone" class="page-reveal-wrapper">
-        <NuxtLayout />
+        <NuxtLayout>
+          <NuxtPage />
+        </NuxtLayout>
       </div>
     </Transition>
   </div>

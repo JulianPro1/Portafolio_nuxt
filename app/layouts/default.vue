@@ -7,19 +7,20 @@
 
     <NavBar />
     <div class="page-content relative z-10" :class="{ 'page-blurred': isDrawerOpen }">
-      <NuxtPage />
+      <slot />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, nextTick } from "vue";
-import { useBackgroundStore } from "~/store";
+import { useBackgroundStore, useScrollStore } from "~/store";
 import { useRoute } from "vue-router";
 import { useLenis } from "~/composables/useLenis";
 import { useNuxtApp } from "#app";
 
 const backgroundStore = useBackgroundStore();
+const scrollStore = useScrollStore();
 const route = useRoute();
 const isDrawerOpen = ref(false);
 const lenis = useLenis();
@@ -53,8 +54,10 @@ watch(
   () => route.path,
   (newPath) => {
     backgroundStore.applyThemeForRoute(newPath);
-    // Reset scroll a la parte superior de inmediato al cambiar de página
-    lenis?.scrollTo(0, { immediate: true });
+    // Reset scroll a la parte superior de inmediato al cambiar de página (solo si no hay scroll guardado)
+    if (!scrollStore.hasSavedState) {
+      lenis?.scrollTo(0, { immediate: true });
+    }
     
     // Esperar a que el DOM se renderice antes de recalcular ScrollTrigger
     nextTick(() => {

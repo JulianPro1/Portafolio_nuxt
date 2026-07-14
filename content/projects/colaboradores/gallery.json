@@ -1,0 +1,28 @@
+{
+  "images": [
+    {
+      "url": "/img/project-colaboradores/colaboradores-web.png",
+      "alt": "Portal de Captación y Postulación",
+      "title": "Portal de Captación y Postulación",
+      "description": "Plataforma pública para la captación, registro e inicio del proceso de postulación de jóvenes laicos interesados en el voluntariado internacional."
+    },
+    {
+      "url": "/img/project-colaboradores/colaboradores-dash-collaborators.png",
+      "alt": "Dashboard del Colaborador",
+      "title": "Dashboard del Colaborador",
+      "description": "Panel privado para el postulante, permitiéndole subir documentación, realizar cuestionarios de perfil y seguir su estatus de aceptación."
+    },
+    {
+      "url": "/img/project-colaboradores/colaboradores-dash-trainers.png",
+      "alt": "Dashboard de Formadores",
+      "title": "Dashboard de Formadores y Evaluadores",
+      "description": "Herramienta para directores y formadores destinada a la evaluación de candidatos, registro de notas de entrevista y seguimiento de idoneidad."
+    },
+    {
+      "url": "/img/project-colaboradores/colaboradores-admin.png",
+      "alt": "Consola de Administración Global",
+      "title": "Consola de Administración Global",
+      "description": "Sistema centralizado de backoffice para la asignación internacional de destinos de misión, control legal de expedientes y reportes estadísticos."
+    }
+  ]
+}

@@ -1,374 +1,164 @@
 <template>
-  <div class="min-h-screen overflow-hidden isolate"
-    <!-- Header con navegación -->
-    <header
-      class="relative z-50 border-b border-global-base/50 bg-global-bg/80 backdrop-blur-xl"
-    >
-      <div class="max-w-7xl mx-auto px-6 py-4">
-        <div class="flex items-center justify-between">
-          <NuxtLink
-            to="/projects"
-            class="flex items-center gap-3 text-global-text-muted hover:text-global-text transition-colors duration-300"
-          >
-            <Icon name="mdi:arrow-left" class="w-5 h-5" />
-            <span class="font-medium">Volver a proyectos</span>
-          </NuxtLink>
-
-          <div class="flex items-center gap-4">
-            <button
-              @click="toggleFavorite"
-              class="p-2 rounded-full bg-global-base/50 text-global-text-muted hover:text-global-text hover:bg-global-base transition-all duration-300"
-            >
-              <Icon
-                :name="isFavorite ? 'mdi:heart' : 'mdi:heart-outline'"
-                class="w-5 h-5"
-              />
-            </button>
-            <button
-              @click="shareProject"
-              class="p-2 rounded-full bg-global-base/50 text-global-text-muted hover:text-global-text hover:bg-global-base transition-all duration-300"
-            >
-              <Icon name="mdi:share-variant" class="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </header>
+  <div class="min-h-screen overflow-hidden isolate relative page-container" :style="categoryStyles">
 
     <!-- Contenido principal -->
-    <main class="relative">
-      <!-- Hero Section -->
-      <section class="relative py-16 px-6">
-        <div class="max-w-7xl mx-auto">
-          <div class="text-center mb-12">
-            <!-- Badge de categoría -->
-            <div class="inline-flex items-center gap-2 mb-6">
-              <span
-                class="px-4 py-2 rounded-full text-sm font-semibold text-white"
-                :class="getCategoryBadgeClass(project.category)"
-              >
-                {{ project.category }}
-              </span>
-              <span
-                v-if="project.status"
-                class="px-4 py-2 rounded-full text-sm font-semibold text-white"
-                :class="getStatusBadgeClass(project.status)"
-              >
-                {{ getStatusText(project.status) }}
-              </span>
-            </div>
+    <main class="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-12">
+      <!-- Hero Section / Header de Proyecto -->
+      <ProjectDetailsProjectDetailHero
+        :title="project.title"
+        :category="project.category"
+        :status="project.status"
+        :categories="projectDoc?.categories || []"
+        @back="goBack"
+      />
 
-            <!-- Título principal -->
-            <h1
-              class="text-5xl md:text-6xl font-bold text-global-text mb-6 bg-gradient-to-r from-global-text to-global-text-muted bg-clip-text text-transparent"
-            >
-              {{ project.title }}
-            </h1>
+      <!-- Layout Asimétrico de 2 Columnas -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        
+        <!-- Columna Izquierda: Galería e Información Detallada (span 8) -->
+        <div class="lg:col-span-8 space-y-12">
+          
+          <ProjectDetailsProjectDetailGallery
+            v-if="project.gallery && project.gallery.length > 0"
+            :gallery="project.gallery"
+          />
 
-            <!-- Descripción breve -->
-            <p class="text-xl text-global-text-muted max-w-3xl mx-auto leading-relaxed">
-              {{ project.shortDescription }}
-            </p>
-          </div>
-
-          <!-- Información clave -->
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
-            <div
-              class="bg-gradient-to-br from-global-base to-global-bg rounded-2xl p-6 border border-global-base"
-            >
-              <div class="flex items-center gap-3 mb-3">
-                <Icon name="mdi:account-tie" class="w-5 h-5 text-projects-accent" />
-                <span class="text-global-text-muted text-sm">Cliente</span>
-              </div>
-              <div class="text-global-text font-semibold text-lg">
-                {{ project.client || "Proyecto personal" }}
-              </div>
-            </div>
-
-            <div
-              class="bg-gradient-to-br from-global-base to-global-bg rounded-2xl p-6 border border-global-base"
-            >
-              <div class="flex items-center gap-3 mb-3">
-                <Icon name="mdi:calendar" class="w-5 h-5 text-projects-accent-light" />
-                <span class="text-global-text-muted text-sm">Fecha</span>
-              </div>
-              <div class="text-global-text font-semibold text-lg">
-                {{ project.date || "2024" }}
-              </div>
-            </div>
-
-            <div
-              class="bg-gradient-to-br from-global-base to-global-bg rounded-2xl p-6 border border-global-base"
-            >
-              <div class="flex items-center gap-3 mb-3">
-                <Icon
-                  name="mdi:clock-time-eight"
-                  class="w-5 h-5 text-projects-accent"
-                />
-                <span class="text-global-text-muted text-sm">Duración</span>
-              </div>
-              <div class="text-global-text font-semibold text-lg">
-                {{ project.duration || "3 meses" }}
-              </div>
-            </div>
-
-            <div
-              class="bg-gradient-to-br from-global-base to-global-bg rounded-2xl p-6 border border-global-base"
-            >
-              <div class="flex items-center gap-3 mb-3">
-                <Icon name="mdi:web" class="w-5 h-5 text-projects-accent-light" />
-                <span class="text-global-text-muted text-sm">Tipo</span>
-              </div>
-              <div class="text-global-text font-semibold text-lg">
-                {{ project.type || "Web Application" }}
-              </div>
-            </div>
-          </div>
+          <!-- Descripción detallada ("Sobre el Proyecto") -->
+          <ProjectDetailsProjectDetailAbout
+            :project="project"
+            :project-doc="projectDoc"
+            :project-detail-doc="projectDetailDoc"
+          />
         </div>
-      </section>
 
-      <!-- Galería de imágenes -->
-      <section
-        class="py-16 px-6 bg-gradient-to-b from-transparent to-global-bg"
-      >
-        <div class="max-w-7xl mx-auto">
-          <div class="text-center mb-12">
-            <h2 class="text-3xl md:text-4xl font-bold text-global-text mb-4">
-              Galería del Proyecto
-            </h2>
-            <p class="text-global-text-muted text-lg">
-              Explora las capturas de pantalla y vistas del proyecto
-            </p>
-          </div>
+        <!-- Columna Derecha: Barra Lateral Fija (span 4) -->
+        <aside class="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
+          <!-- Ficha Técnica -->
+          <!-- Ficha Técnica -->
+          <ProjectDetailsProjectDetailTechSheet
+            :category="project.category"
+            :duration="project.duration"
+            :collaborators="project.collaborators"
+            :status="project.status"
+          />
 
-          <!-- Galería principal -->
-          <div class="relative">
-            <!-- Contenedor de imágenes con scroll horizontal -->
-            <div class="overflow-x-auto overflow-y-hidden pb-6">
-              <div class="flex gap-6" style="width: max-content">
-                <div
-                  v-for="(image, index) in project.gallery"
-                  :key="index"
-                  class="relative group cursor-pointer"
-                  @click="openImageModal(image, index)"
-                >
-                  <div
-                    class="relative w-[400px] h-[300px] rounded-2xl overflow-hidden border border-global-base hover:border-projects-accent/50 transition-all duration-300"
-                  >
-                    <img
-                      :src="image.url"
-                      :alt="image.alt"
-                      class="w-full h-full object-cover"
-                    />
-                    <div
-                      class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    >
-                      <div class="absolute bottom-4 left-4 right-4">
-                        <p class="text-global-text text-sm font-medium">
-                          {{ image.title || `Vista ${index + 1}` }}
-                        </p>
-                        <p class="text-global-text-muted text-xs mt-1">
-                          {{ image.description || "Haz clic para ampliar" }}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <!-- Acciones / Enlaces de despliegue -->
+          <ProjectDetailsProjectDetailLinks
+            :live-url="project.liveUrl"
+            :github-url="project.githubUrl"
+          />
 
-            <!-- Indicadores de scroll -->
-            <div class="flex justify-center mt-4 gap-2">
-              <div
-                v-for="(_, index) in project.gallery"
-                :key="index"
-                class="w-2 h-2 rounded-full bg-global-text-dim"
-              ></div>
-            </div>
-          </div>
-        </div>
-      </section>
+          <!-- Tecnologías Utilizadas -->
+          <ProjectDetailsProjectDetailTechnologies
+            :technologies="project.technologies"
+          />
+        </aside>
 
-      <!-- Descripción detallada -->
-      <section class="py-16 px-6">
-        <div class="max-w-4xl mx-auto">
-          <h2
-            class="text-3xl md:text-4xl font-bold text-white mb-8 text-center"
-          >
-            Sobre el Proyecto
-          </h2>
-
-          <div class="prose prose-invert prose-lg max-w-none">
-            <div
-              class="bg-gradient-to-br from-global-base to-global-bg rounded-2xl p-8 border border-global-base"
-            >
-              <ContentRenderer v-if="project.body" :value="project" class="text-global-text-muted leading-relaxed mb-6 markdown-body" />
-              <p v-else class="text-global-text-muted leading-relaxed mb-6">
-                {{ project.description }}
-              </p>
-
-              <!-- Objetivos -->
-              <div v-if="project.objectives" class="mb-8">
-                <h3
-                  class="text-xl font-semibold text-global-text mb-4 flex items-center gap-2"
-                >
-                  <Icon name="mdi:target" class="w-5 h-5 text-projects-accent" />
-                  Objetivos del Proyecto
-                </h3>
-                <ul class="space-y-3">
-                  <li
-                    v-for="objective in project.objectives"
-                    :key="objective"
-                    class="flex items-start gap-3 text-global-text-muted"
-                  >
-                    <Icon
-                      name="mdi:check-circle"
-                      class="w-5 h-5 text-projects-accent-light mt-0.5 flex-shrink-0"
-                    />
-                    <span>{{ objective }}</span>
-                  </li>
-                </ul>
-              </div>
-
-              <!-- Características principales -->
-              <div v-if="project.features" class="mb-8">
-                <h3
-                  class="text-xl font-semibold text-global-text mb-4 flex items-center gap-2"
-                >
-                  <Icon name="mdi:star" class="w-5 h-5 text-projects-accent-light" />
-                  Características Principales
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div
-                    v-for="feature in project.features"
-                    :key="feature"
-                    class="flex items-start gap-3 p-4 bg-global-bg/50 rounded-xl border border-global-base"
-                  >
-                    <Icon
-                      name="mdi:check-bold"
-                      class="w-4 h-4 text-projects-accent mt-0.5 flex-shrink-0"
-                    />
-                    <span class="text-global-text-muted text-sm">{{ feature }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Tecnologías utilizadas -->
-      <section
-        class="py-16 px-6 bg-gradient-to-b from-transparent to-[#121212]"
-      >
-        <div class="max-w-7xl mx-auto">
-          <h2
-            class="text-3xl md:text-4xl font-bold text-white mb-8 text-center"
-          >
-            Tecnologías Utilizadas
-          </h2>
-
-          <div class="flex flex-wrap justify-center gap-4">
-            <div
-              v-for="tech in project.technologies"
-              :key="tech"
-              class="px-6 py-3 bg-gradient-to-r from-projects-accent-dark/40 to-[#121212] rounded-full border border-gray-800 hover:border-projects-accent/50 transition-all duration-300"
-            >
-              <span class="text-white font-medium">{{ tech }}</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Enlaces del proyecto -->
-      <section class="py-16 px-6">
-        <div class="max-w-4xl mx-auto">
-          <div
-            class="bg-gradient-to-br from-projects-accent-dark/40 to-[#121212] rounded-2xl p-8 border border-gray-800"
-          >
-            <h2 class="text-2xl font-bold text-white mb-6 text-center">
-              Explora el Proyecto
-            </h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <a
-                v-if="project.liveUrl"
-                :href="project.liveUrl"
-                target="_blank"
-                class="flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-projects-accent to-projects-accent-light text-white font-semibold rounded-full hover:shadow-[0_0_30px_rgba(31,77,214,0.4)] transition-all duration-300"
-              >
-                <Icon name="mdi:external-link" class="w-5 h-5" />
-                <span>Visitar Sitio Web</span>
-              </a>
-
-              <a
-                v-if="project.githubUrl"
-                :href="project.githubUrl"
-                target="_blank"
-                class="flex items-center justify-center gap-3 px-6 py-4 bg-projects-accent-dark/80 text-white font-semibold rounded-full border border-gray-800/60 hover:bg-white/10 hover:border-projects-accent/50 transition-all duration-300"
-              >
-                <Icon name="mdi:github" class="w-5 h-5" />
-                <span>Ver Código Fuente</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      </div>
     </main>
 
-    <!-- Modal de imagen -->
-    <div
-      v-if="selectedImage"
-      class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/90 backdrop-blur-sm"
-      @click="closeImageModal"
+    <!-- Botón flotante volver para móviles/acceso rápido -->
+    <NuxtLink
+      to="/projects"
+      @click.prevent="goBack"
+      class="fixed bottom-6 right-6 z-50 flex items-center justify-center w-12 h-12 rounded-full glass-header action-btn shadow-lg transition-transform duration-300 hover:scale-110 active:scale-95 group md:hidden"
+      aria-label="Volver a proyectos"
     >
-      <div class="relative max-w-6xl max-h-[90vh] w-full">
-        <button
-          @click="closeImageModal"
-          class="absolute -top-12 right-0 p-3 text-white hover:text-projects-accent transition-colors duration-300"
-        >
-          <Icon name="mdi:close" class="w-8 h-8" />
-        </button>
-
-        <img
-          :src="selectedImage.url"
-          :alt="selectedImage.alt"
-          class="w-full h-full object-contain rounded-2xl"
-        />
-
-        <div
-          class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent rounded-b-2xl"
-        >
-          <h3 class="text-white text-xl font-semibold mb-2">
-            {{ selectedImage.title || `Vista ${selectedImageIndex + 1}` }}
-          </h3>
-          <p class="text-gray-300 text-sm">
-            {{
-              selectedImage.description || "Captura de pantalla del proyecto"
-            }}
-          </p>
-        </div>
-      </div>
-    </div>
+      <Icon name="mdi:arrow-left" class="w-6 h-6 text-global-text transform group-hover:-translate-x-0.5 transition-transform" />
+    </NuxtLink>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from "vue";
+import { useRouter, onBeforeRouteLeave } from "vue-router";
+import { useScrollStore } from "~/store";
+
+const router = useRouter();
+const scrollStore = useScrollStore();
+
+const projectCategory = computed(() => {
+  // 1. Usar la pestaña/categoría activa guardada en el store si coincide con las categorías del proyecto
+  if (scrollStore.activeTab && projectDoc.value?.categories?.includes(scrollStore.activeTab)) {
+    return scrollStore.activeTab;
+  }
+  // 2. Si no, usar la primera categoría definida en el documento
+  if (projectDoc.value?.categories && projectDoc.value.categories.length > 0) {
+    return projectDoc.value.categories[0];
+  }
+  // 3. Fallback
+  return "destacados";
+});
+
+const categoryStyles = computed(() => {
+  const categoryId = projectCategory.value;
+  const map = {
+    "destacados": "destacados",
+    "en-produccion": "produccion",
+    "en-desarrollo": "desarrollo",
+    "personales": "personales",
+  };
+  const suffix = map[categoryId] || "produccion";
+  return {
+    "--projects-accent": `var(--projects-accent-${suffix})`,
+    "--projects-accent-light": `var(--projects-accent-light-${suffix})`,
+    "--projects-accent-dark": `var(--projects-accent-dark-${suffix})`,
+  };
+});
+
+onBeforeRouteLeave((to) => {
+  // Si salimos del detalle del proyecto y no vamos a /projects o a otro /project-detail/, reiniciamos el scroll
+  if (!to.path.startsWith("/projects") && !to.path.startsWith("/project-detail/")) {
+    scrollStore.clearScrollState();
+  }
+});
 
 // Estado
 const isFavorite = ref(false);
-const selectedImage = ref(null);
-const selectedImageIndex = ref(0);
+
+const goBack = () => {
+  router.push("/projects");
+};
 
 // Props (viene de la ruta dinámica)
 const route = useRoute();
 const projectId = route.params.id_project;
 
 // Obtener datos del proyecto con Nuxt Content
-const { data: projectDoc } = await useAsyncData(`project-${projectId}`, () => 
-  queryCollection('projects').where('id', '=', projectId).first()
-)
+const { data: projectDoc } = await useAsyncData(`project-${projectId}`, async () => {
+  // 1. Intentar buscar por el campo 'id' de frontmatter
+  let doc = await queryCollection('projects').where('id', '=', projectId).first()
+  
+  // 2. Intentar buscar por el campo 'stem' del archivo (ej: 'projects/chami')
+  if (!doc) {
+    doc = await queryCollection('projects').where('stem', '=', `projects/${projectId}`).first()
+  }
+  
+  // 3. Intentar buscar por el campo 'path' del archivo (ej: '/projects/chami')
+  if (!doc) {
+    doc = await queryCollection('projects').where('path', '=', `/projects/${projectId}`).first()
+  }
+  
+  return doc
+})
+
+// Si no se encuentra el proyecto, lanzar un error 404 de Nuxt
+if (!projectDoc.value) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: `Proyecto no encontrado: ${projectId}`,
+    fatal: true
+  })
+}
+
+// Obtener información en profundidad de la subcarpeta del proyecto (ej: 'projects/chami/index.md')
+const { data: projectDetailDoc } = await useAsyncData(`project-detail-body-${projectId}`, async () => {
+  let doc = await queryCollection('projectDetails').where('stem', '=', `projects/${projectId}/index`).first()
+  if (!doc) {
+    doc = await queryCollection('projectDetails').where('stem', '=', `projects/${projectId}/${projectId}`).first()
+  }
+  return doc
+})
 
 const project = computed(() => {
   const p = projectDoc.value || {};
@@ -376,34 +166,28 @@ const project = computed(() => {
     id: projectId,
     title: p.title || "Proyecto",
     category: p.category || "Desarrollo",
-    status: p.status || "production",
-    client: p.client || "Cliente Privado",
+    status: p.categories?.includes('en-produccion') ? 'production' : (p.categories?.includes('en-desarrollo') ? 'development' : (p.categories?.includes('personales') ? 'personal' : p.status || 'production')),
+    client: p.client || "Proyecto personal",
     date: p.date || "2024",
     duration: p.developmentTime || p.duration || "Variable",
+    collaborators: p.collaborators || 1,
     type: p.type || "Sitio Web",
     shortDescription: p.shortDescription || p.description || "",
     description: p.description || "",
-    objectives: p.objectives || [
-      "Optimizar la experiencia de usuario y accesibilidad.",
-      "Garantizar la escalabilidad del sistema.",
-      "Implementar tecnologías modernas y seguras."
-    ],
-    features: p.features || [
-      "Diseño responsivo y adaptativo",
-      "Optimización de velocidad de carga",
-      "Lógica de negocio robusta"
-    ],
+    objectives: p.objectives || [],
+    features: p.features || [],
     technologies: p.technologies || [],
     liveUrl: p.liveUrl || "",
     githubUrl: p.githubUrl || "",
-    gallery: p.gallery || [
+    icon: p.icon || "",
+    gallery: p.gallery || (p.icon ? [
       {
-        url: "https://picsum.photos/seed/project/400/300.jpg",
-        alt: p.title || "Captura de pantalla",
-        title: p.title || "Vista Principal",
-        description: "Captura de pantalla del proyecto"
+        url: p.icon,
+        alt: p.title || "Logo del proyecto",
+        title: p.title || "Identidad Visual",
+        description: "Logotipo oficial del proyecto"
       }
-    ],
+    ] : []),
     _path: p._path,
     body: p.body
   };
@@ -413,6 +197,8 @@ const project = computed(() => {
 const toggleFavorite = () => {
   isFavorite.value = !isFavorite.value;
 };
+
+
 
 const shareProject = async () => {
   if (navigator.share) {
@@ -428,52 +214,13 @@ const shareProject = async () => {
   } else {
     // Fallback: copiar al portapapeles
     navigator.clipboard.writeText(window.location.href);
-    // Aquí podrías mostrar una notificación
   }
 };
 
-const openImageModal = (image, index) => {
-  selectedImage.value = image;
-  selectedImageIndex.value = index;
-};
 
-const closeImageModal = () => {
-  selectedImage.value = null;
-  selectedImageIndex.value = 0;
-};
 
-// Classes dinámicas
-const getCategoryBadgeClass = (category) => {
-  const classes = {
-    FinTech: "bg-gradient-to-r from-projects-accent-light to-projects-accent",
-    Education: "bg-gradient-to-r from-projects-accent to-projects-accent-dark",
-    Health: "bg-gradient-to-r from-projects-accent-light to-projects-accent",
-    Creative: "bg-gradient-to-r from-projects-accent to-projects-accent-light",
-    Utility: "bg-gradient-to-r from-projects-accent to-projects-accent-light",
-    Entertainment: "bg-gradient-to-r from-projects-accent-light to-projects-accent",
-    Content: "bg-gradient-to-r from-projects-accent-light to-projects-accent",
-    default: "bg-gradient-to-r from-projects-accent to-projects-accent-light",
-  };
-  return classes[category] || classes["default"];
-};
 
-const getStatusBadgeClass = (status) => {
-  const classes = {
-    production: "bg-gradient-to-r from-projects-accent-light to-projects-accent animate-pulse",
-    development: "bg-gradient-to-r from-projects-accent to-projects-accent-dark",
-    personal: "bg-gradient-to-r from-projects-accent-light to-projects-accent",
-  };
-  return classes[status] || classes["development"];
-};
 
-const getStatusText = (status) => {
-  const texts = {
-    production: "En producción",
-    development: "En desarrollo",
-    personal: "Proyecto personal",
-  };
-  return texts[status] || "En desarrollo";
-};
 
 // Meta tags para SEO
 useHead({
@@ -482,37 +229,105 @@ useHead({
     { name: "description", content: project.value.shortDescription },
     { property: "og:title", content: project.value.title },
     { property: "og:description", content: project.value.shortDescription },
-    { property: "og:image", content: project.value.gallery[0]?.url },
+    { property: "og:image", content: project.value.gallery[0]?.url || project.value.icon || "" },
     { name: "twitter:card", content: "summary_large_image" },
   ],
 });
+
 </script>
 
 <style scoped>
-/* Scroll horizontal personalizado */
-.overflow-x-auto::-webkit-scrollbar {
-  height: 8px;
+/* Contenedor general */
+.page-container {
+  background-color: var(--global-bg);
 }
 
-.overflow-x-auto::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+/* Efectos de luces de fondo (Glow) */
+.glow-primary {
+  background: radial-gradient(circle, var(--projects-accent) 0%, transparent 70%);
+}
+.glow-secondary {
+  background: radial-gradient(circle, var(--projects-accent-light) 0%, transparent 70%);
 }
 
-.overflow-x-auto::-webkit-scrollbar-thumb {
-  background: linear-gradient(to right, var(--projects-accent), var(--projects-accent-light));
-  border-radius: 4px;
+/* Encabezado Glassmorphic sin barra '/' */
+.glass-header {
+  background-color: color-mix(in srgb, var(--global-bg) 80%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--global-base) 50%, transparent);
+  backdrop-filter: blur(20px);
 }
 
-.overflow-x-auto::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to right, var(--projects-accent-light), var(--projects-accent));
+/* Botones de acción del encabezado */
+.action-btn {
+  background-color: color-mix(in srgb, var(--global-base) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--global-base) 80%, transparent);
+}
+.action-btn:hover {
+  background-color: var(--global-base);
+  border-color: color-mix(in srgb, var(--projects-accent-light) 50%, transparent);
 }
 
-/* Animaciones */
-@keyframes fadeIn {
+/* Tarjetas base estilo cristal */
+.glass-card {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--global-base) 60%, transparent), color-mix(in srgb, var(--global-bg) 80%, transparent));
+  border: 1px solid color-mix(in srgb, var(--global-base) 80%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+/* Ítems de características */
+.feature-item {
+  background-color: color-mix(in srgb, var(--global-bg) 50%, transparent);
+  border: 1px solid color-mix(in srgb, var(--global-base) 60%, transparent);
+  transition: all 0.3s ease;
+}
+.feature-item:hover {
+  border-color: color-mix(in srgb, var(--projects-accent-light) 40%, transparent);
+  transform: translateY(-2px);
+}
+
+/* Botones de despliegue */
+.btn-live {
+  background: linear-gradient(135deg, var(--projects-accent) 0%, var(--projects-accent-light) 100%);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--projects-accent) 30%, transparent);
+}
+.btn-live:hover {
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--projects-accent) 55%, transparent);
+}
+
+.btn-github {
+  background-color: color-mix(in srgb, var(--global-base) 80%, transparent);
+  border: 1px solid color-mix(in srgb, var(--global-base) 90%, transparent);
+}
+.btn-github:hover {
+  background-color: color-mix(in srgb, var(--global-base) 100%, transparent);
+  border-color: color-mix(in srgb, var(--projects-accent) 50%, transparent);
+}
+
+/* Píldoras de tecnología */
+.tech-pill {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--projects-accent-dark) 20%, transparent), color-mix(in srgb, var(--global-bg) 90%, transparent));
+  border: 1px solid color-mix(in srgb, var(--global-base) 80%, transparent);
+  transition: all 0.3s ease;
+}
+.tech-pill:hover {
+  border-color: color-mix(in srgb, var(--projects-accent) 50%, transparent);
+  transform: translateY(-1px);
+}
+
+/* Ocultar scrollbar horizontal en miniaturas */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Animación de entrada de contenido */
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
@@ -520,23 +335,55 @@ useHead({
   }
 }
 
-main > section {
-  animation: fadeIn 0.8s ease-out;
+main {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Efectos hover */
-.group:hover .group-hover\:opacity-100 {
-  opacity: 1;
+/* Transiciones de imagen activa */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .text-5xl {
-    font-size: 2.5rem;
-  }
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 
-  .text-6xl {
-    font-size: 3rem;
-  }
+/* Estilos para el renderizador de Markdown (Nuxt Content) */
+.markdown-body :deep(p) {
+  margin-bottom: 1.25rem;
+  line-height: 1.75;
+}
+.markdown-body :deep(p:last-child) {
+  margin-bottom: 0;
+}
+.markdown-body :deep(ul) {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.markdown-body :deep(ol) {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.markdown-body :deep(li) {
+  margin-bottom: 0.75rem;
+}
+.markdown-body :deep(li:last-child) {
+  margin-bottom: 0;
+}
+.markdown-body :deep(strong) {
+  color: var(--global-text);
+  font-weight: 600;
+}
+.markdown-body :deep(code) {
+  font-family: monospace;
+  background-color: color-mix(in srgb, var(--global-base) 80%, transparent);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.375rem;
+  font-size: 0.875em;
+  color: var(--projects-accent-light);
 }
 </style>

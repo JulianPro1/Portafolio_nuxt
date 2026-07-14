@@ -1,0 +1,22 @@
+{
+  "images": [
+    {
+      "url": "/img/project-chami/gallery-1.png",
+      "alt": "Consola Administrativa",
+      "title": "Consola Administrativa",
+      "description": "Logística centralizada y control de flotas en tiempo real."
+    },
+    {
+      "url": "/img/project-chami/gallery-2.png",
+      "alt": "Seguimiento de Rutas",
+      "title": "Seguimiento de Rutas",
+      "description": "Monitoreo en tiempo real de vehículos y paradas escolares."
+    },
+    {
+      "url": "/img/project-chami/gallery-3.png",
+      "alt": "App de Conductores",
+      "title": "App de Conductores",
+      "description": "Navegación simplificada e indicaciones de recogida."
+    }
+  ]
+}

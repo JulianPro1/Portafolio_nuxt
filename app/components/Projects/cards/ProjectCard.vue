@@ -85,7 +85,8 @@
       ]"
     >
       <NuxtLink
-        :to="`/project-detail/${project.id}`"
+        :to="`/project-detail/${cleanProjectId}`"
+        @click="handleDetailClick"
         class="font-bold text-white mb-2 transition-[transform,colors] duration-300 will-change-transform group-hover:translate-x-1 hover:text-[var(--category-light)] cursor-pointer"
         :class="[
           variant === 'large' ? 'text-xl' : 'text-sm'
@@ -124,7 +125,8 @@
       <!-- Enlaces del proyecto -->
       <div class="flex items-center justify-end">
         <NuxtLink
-          :to="`/project-detail/${project.id}`"
+          :to="`/project-detail/${cleanProjectId}`"
+          @click="handleDetailClick"
           class="text-md font-medium flex items-center gap-1.5 transition-[transform,colors] duration-300 will-change-transform hover:translate-x-1 text-white hover:text-[var(--category-light)]"
         >
           <Icon name="mdi:arrow-right" class="w-3 h-3" />
@@ -137,6 +139,17 @@
 
 <script setup lang="ts">
 import { gsap } from 'gsap'
+import { useScrollStore } from '~/store'
+
+const scrollStore = useScrollStore()
+
+function handleDetailClick() {
+  if (import.meta.client) {
+    // Intentar obtener la categoría desde la sección padre o desde el objeto project
+    const activeTab = props.project.categories?.[0] || 'destacados'
+    scrollStore.saveScrollState(window.scrollY, activeTab, props.project.id)
+  }
+}
 import type { BadgeConfig, ColorScheme, LinksConfig } from '~/types/projects'
 
 const props = defineProps<{
@@ -146,6 +159,12 @@ const props = defineProps<{
   colorScheme: ColorScheme
   linksConfig: LinksConfig
 }>()
+
+const cleanProjectId = computed(() => {
+  if (!props.project?.id) return ''
+  // Si el id es una ruta como 'projects/projects/changan.md' o 'projects/changan.md', extraer solo 'changan'
+  return props.project.id.split('/').pop()?.replace('.md', '') || props.project.id
+})
 
 const isExpanded = ref(false)
 const showFullText = ref(false)   // delayed so line-clamp fades with the container

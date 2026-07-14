@@ -7,7 +7,18 @@
 </template>
 
 <script setup>
+import { onBeforeRouteLeave } from "vue-router";
+import { useScrollStore } from "~/store";
 import ProjectsSectionOrchestrator from "~/components/Projects/SectionOrchestrator.vue";
+
+const scrollStore = useScrollStore();
+
+onBeforeRouteLeave((to) => {
+  // Si no navegamos al detalle de un proyecto, reiniciamos el estado del scroll
+  if (!to.path.startsWith("/project-detail/")) {
+    scrollStore.clearScrollState();
+  }
+});
 
 // Meta tags para SEO
 useHead({

@@ -1,7 +1,7 @@
 import { type Ref, watch, nextTick, onUnmounted } from 'vue';
 import { useNuxtApp } from '#app';
 import { useLenis } from '~/composables/useLenis';
-import { useBackgroundStore } from '~/store';
+import { useBackgroundStore, useScrollStore } from '~/store';
 
 interface Tab {
   id: string;
@@ -31,6 +31,7 @@ export const useProjectsOrchestratorAnimations = ({
   const { $gsap: gsap, $ScrollTrigger: ScrollTrigger } = useNuxtApp();
   const lenis = useLenis();
   const backgroundStore = useBackgroundStore();
+  const scrollStore = useScrollStore();
   let gsapContext: any = null;
 
   // ─── Indicador de tab activo ───────────────────────────────────────────────
@@ -193,11 +194,101 @@ export const useProjectsOrchestratorAnimations = ({
       });
     });
 
-    // Posicionar el indicador tras el renderizado inicial
+    // Posicionar el indicador tras el renderizado inicial y restaurar scroll si es necesario
     nextTick(() => {
-      setTimeout(() => {
-        updateActiveIndicator(activeTab.value, true);
-      }, 200);
+      // Si hay un estado guardado en el scrollStore, restaurarlo
+      if (scrollStore.hasSavedState) {
+        isScrollingTo.value = true
+        activeTab.value = scrollStore.activeTab
+        
+        setTimeout(() => {
+          updateActiveIndicator(activeTab.value, true)
+          
+          let retries = 0;
+          const maxRetries = 20; // Hasta ~600ms de espera por el renderizado DOM
+
+          const tryRestore = () => {
+            const el = scrollStore.selectedProjectId
+              ? document.querySelector(`[data-project-id="${scrollStore.selectedProjectId}"]`)
+              : null
+
+            // Si esperamos un elemento y no se ha montado aún, reintentar
+            if (scrollStore.selectedProjectId && !el && retries < maxRetries) {
+              retries++;
+              setTimeout(tryRestore, 30);
+              return;
+            }
+
+            let restored = false
+            const onScrollRestored = () => {
+              if (restored) return
+              restored = true
+              if (el) {
+                gsap.fromTo(
+                  el,
+                  { filter: 'brightness(1) drop-shadow(0 0 0px transparent)' },
+                  {
+                    filter: 'brightness(1.15) drop-shadow(0 0 15px var(--category-accent))',
+                    duration: 0.4,
+                    yoyo: true,
+                    repeat: 3,
+                    ease: 'sine.inOut',
+                    onComplete: () => {
+                      gsap.set(el, { clearProps: 'filter' })
+                    },
+                  }
+                )
+              }
+              scrollStore.clearScrollState()
+              setTimeout(() => {
+                isScrollingTo.value = false
+              }, 100)
+            }
+
+            let targetY = Math.max(0, scrollStore.scrollY - 60)
+
+            if (el) {
+              const rect = el.getBoundingClientRect()
+              const scrollTop = window.scrollY || document.documentElement.scrollTop
+              const elTop = rect.top + scrollTop
+              
+              // Ajustar la posición según la altura de la pantalla y el tamaño del elemento
+              const navbarHeight = 80 // Offset seguro para la navbar flotante
+              const viewportHeight = window.innerHeight
+              
+              if (rect.height < viewportHeight - navbarHeight) {
+                // Si el elemento cabe en pantalla, lo centramos verticalmente respecto al espacio disponible debajo de la navbar
+                targetY = Math.max(0, elTop - navbarHeight - (viewportHeight - navbarHeight - rect.height) / 2)
+              } else {
+                // Si es más grande que la pantalla, nos alineamos arriba dejando margen para la navbar
+                targetY = Math.max(0, elTop - (navbarHeight + 20))
+              }
+            }
+
+            if (lenis) {
+              lenis.scrollTo(targetY, {
+                duration: 0.5,
+                immediate: true,
+                onComplete: onScrollRestored
+              })
+              // Ejecutar directamente en caso de que immediate: true no dispare el callback
+              onScrollRestored()
+            } else {
+              window.scrollTo({
+                top: targetY,
+                behavior: 'auto'
+              })
+              onScrollRestored()
+            }
+          }
+
+          tryRestore()
+        }, 350)
+      } else {
+        setTimeout(() => {
+          updateActiveIndicator(activeTab.value, true);
+        }, 200);
+      }
     });
   };
 

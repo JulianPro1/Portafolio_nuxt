@@ -1,0 +1,22 @@
+{
+  "images": [
+    {
+      "url": "/img/project-changan/changan-app-web.png",
+      "alt": "Changan App Web",
+      "title": "Changan App Web",
+      "description": "Web para descargar la App movil de los usuarios de Changan"
+    },
+    {
+      "url": "/img/project-changan/changan-concesionarios.png",
+      "alt": "Changan Concesionarios",
+      "title": "Panel administrativo Changan Concesionarios",
+      "description": "Panel administrativo para la gestión de vehículos y servicios de los concesionarios Changan"
+    },
+    {
+      "url": "/img/project-changan/changan-admin.png",
+      "alt": "Changan App Usuarios",
+      "title": "Changan Admin",
+      "description": "Panel administrativo para la gestión de citas y servicios de Changan Center"
+    }
+  ]
+}

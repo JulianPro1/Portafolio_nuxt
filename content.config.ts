@@ -21,6 +21,22 @@ export default defineContentConfig({
         categories: z.array(z.string()).optional()
       })
     }),
+    projectDetails: defineCollection({
+      type: 'page',
+      source: 'projects/*/*.md'
+    }),
+    projectGalleries: defineCollection({
+      type: 'data',
+      source: 'projects/*/*.json',
+      schema: z.object({
+        images: z.array(z.object({
+          url: z.string(),
+          alt: z.string(),
+          title: z.string().optional(),
+          description: z.string().optional()
+        }))
+      })
+    }),
 
     skills: defineCollection({
       type: 'data',

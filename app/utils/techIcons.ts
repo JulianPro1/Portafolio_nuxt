@@ -1,0 +1,82 @@
+/** Mapa de nombre normalizado → ícono de Iconify */
+export const TECH_ICON_MAP: Record<string, string> = {
+  // JavaScript ecosystem
+  'vue':              'logos:vue',
+  'vue.js':           'logos:vue',
+  'vue.js 3':         'logos:vue',
+  'nuxt':             'logos:nuxt-icon',
+  'nuxt.js':          'logos:nuxt-icon',
+  'react':            'logos:react',
+  'next':             'logos:nextjs-icon',
+  'next.js':          'logos:nextjs-icon',
+  'astro':            'logos:astro-icon',
+  'vite':             'logos:vitejs',
+  'typescript':       'logos:typescript-icon',
+  'javascript':       'logos:javascript',
+  'node':             'logos:nodejs-icon',
+  'node.js':          'logos:nodejs-icon',
+  'alpine.js':        'logos:alpinejs-icon',
+  'alpine':           'logos:alpinejs-icon',
+
+  // Animation & UI
+  'gsap':             'simple-icons:greensock',
+  'lenis scroll':     'mdi:scroll',
+  'lenis':            'mdi:scroll',
+  'swiper':           'simple-icons:swiper',
+
+  // Styling
+  'tailwind':         'logos:tailwindcss-icon',
+  'tailwindcss':      'logos:tailwindcss-icon',
+  'tailwind css':     'logos:tailwindcss-icon',
+  'tailwind css v4':  'logos:tailwindcss-icon',
+  'bootstrap':        'logos:bootstrap',
+  'bootstrap 5':      'logos:bootstrap',
+  'sass':             'logos:sass',
+  'css':              'logos:css-3',
+  'css3':             'logos:css-3',
+  'html':             'logos:html-5',
+  'html5':            'logos:html-5',
+
+  // Maps & data viz
+  'leaflet':          'logos:leaflet',
+  'leaflet.js':       'logos:leaflet',
+  'mapbox':           'logos:mapbox-icon',
+  'd3':               'logos:d3',
+  'd3.js':            'logos:d3',
+
+  // Storage
+  'dexie.js':         'mdi:database',
+  'dexie':            'mdi:database',
+  'indexeddb':        'mdi:database-outline',
+
+  // Backend & DB
+  'python':           'logos:python',
+  'django':           'logos:django-icon',
+  'fastapi':          'logos:fastapi-icon',
+  'laravel':          'logos:laravel',
+  'php':              'logos:php',
+  'mysql':            'logos:mysql-icon',
+  'postgresql':       'logos:postgresql',
+  'postgres':         'logos:postgresql',
+  'mongodb':          'logos:mongodb-icon',
+  'redis':            'logos:redis',
+  'supabase':         'logos:supabase-icon',
+  'firebase':         'logos:firebase',
+
+  // Cloud & DevOps
+  'docker':           'logos:docker-icon',
+  'aws':              'logos:aws',
+  'git':              'logos:git-icon',
+  'github':           'logos:github-icon',
+  'vercel':           'logos:vercel-icon',
+
+  // Other
+  'pinia':            'logos:pinia',
+  'graphql':          'logos:graphql',
+  'prisma':           'logos:prisma',
+  'figma':            'logos:figma',
+}
+
+export function getTechIcon(tech: string): string {
+  return TECH_ICON_MAP[tech.toLowerCase()] ?? 'mdi:puzzle-outline'
+}

@@ -113,7 +113,8 @@
           </div>
 
           <!-- Listado de Proyectos Bento Grid en Scroll -->
-          <ProjectsListScroll :category="tab.id" />
+          <ProjectsListScroll v-if="getProjectsForCategory(tab.id).length > 0" :category="tab.id" />
+          <ProjectsEmptyState v-else :category="tab.id" class="mt-4" />
         </div>
       </div>
     </div>
@@ -127,6 +128,7 @@
 import { ref, onMounted } from "vue";
 import SectionTitle from "~/components/Common/SectionTitle.vue";
 import ProjectsListScroll from "~/components/Projects/ProjectsListScroll.vue";
+import ProjectsEmptyState from "~/components/Projects/ProjectsEmptyState.vue";
 import ProjectsDropdown from "~/components/Projects/ProjectsDropdown.vue";
 import ProjectsFloatingBubble from "~/components/Projects/ProjectsFloatingBubble.vue";
 import AnimatedElement from "~/components/Common/AnimatedElement.vue";
